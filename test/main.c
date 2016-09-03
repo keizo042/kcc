@@ -34,40 +34,65 @@ int
 main(int argc, char* argv[]) {
     
     FILE *fp;
+    int flag = 0;
     lex_state *l1, 
               *l2;
 
     l1 = lex(test1_code_function);
     if(l1 == NULL)
     {
+        flag = 1;
         printf("test1: lex return null ptr\n");
-        goto fail;
+        goto test1_end;
+    }else
+    {
+        printf("test1:\n");
     }
+
     if(lex_test1(l1->head))
     {
+        flag = 1;
         printf("lex_test1 fail\n");
-        goto fail;
+        goto test1_end;
+    }else
+    {
+        printf("test1:\n");
     }
+test1_end:
+
     l2 = lex(test2_code_comment);
     if(l2 == NULL)
     {
+        flag = 1;
         printf("test2: lex return null ptr\n");
-        goto fail;
+        goto test2_end;
+    }else
+    {
+        printf("test2:\n");
     }
+
     if(lex_test2_comment(l2->head))
     {
+        flag = 1;
         printf("test2: lex_test2 fail\n");
-        goto fail;
+        goto test2_end;
+    }else
+    {
+        printf("test2:\n");
     }
+test2_end:
         
 
-sucess:
+    if(flag == 0)
+    {
     printf("test pass!\n");
     return 0;
-    
-fail:
+    }else
+    {
     printf("test fail...\n");
     return -1;
+    }
+    
 }
 
 
