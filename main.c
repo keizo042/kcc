@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "kcc.h"
 #include <string.h>
 
 static char* text[] = {
