@@ -3,12 +3,31 @@
 #include "kcc.h"
 #define BUF_LEN 10240 
 
+struct args_s {
+};
+typedef struct args_s args_t;
+
+args_t* optparse(int argc, char **args)
+{
+    args_t *arg = (args_t *)malloc( sizeof(args_t));
+    if(argc < 2)
+    {
+        free(arg);
+    return NULL;
+    }
+    return arg;
+}
+
 char *test1_code_function = "int func() {return 0; }";
 char *test2_code_comment = "// yuyushiki is awesome. //";
+char *test3_code_pragma_digit = "#define PRAGMA 1";
+char *test4_code_pragma_str = "#define PRAGMAR ";
 
 
 int lex_test1(lex_tokens_t *l);
 int lex_test2_comment(lex_tokens_t *l);
+int lex_test3_pragma_digit(lex_tokens_t *l);
+int lex_test4_pragma_str(lex_tokens_t *l);
 
 
 int
