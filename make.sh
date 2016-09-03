@@ -21,14 +21,17 @@ case $1 in
         rm *.o  $ROOT_DIR/test/*.o kcc $ROOT_DIR/test/test
     ;;
     *)
+        echo "gcc -c kcc.c..."
         gcc -c kcc.c 
         if [ $? -ne 0 ]; then
             exit $?
         fi
+        echo "gcc -c main.c..."
         gcc -c main.c
         if [ $? -ne 0 ]; then
             exit $?
         fi
+        echo "gcc kcc.o main.o -o kcc..."
         gcc kcc.o main.o -o kcc
         if [ $? -ne 0 ]; then
             exit $?
