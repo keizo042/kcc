@@ -22,17 +22,17 @@ case $1 in
     ;;
     *)
         echo "gcc -c kcc.c..."
-        gcc -c kcc.c 
+        gcc -I $ROOT_DIR -c kcc.c 
         if [ $? -ne 0 ]; then
             exit $?
         fi
         echo "gcc -c main.c..."
-        gcc -c main.c
+        gcc -I $ROOT_DIR -c main.c
         if [ $? -ne 0 ]; then
             exit $?
         fi
         echo "gcc kcc.o main.o -o kcc..."
-        gcc kcc.o main.o -o kcc
+        gcc -I $ROOT_DIR kcc.o main.o -o kcc
         if [ $? -ne 0 ]; then
             exit $?
         fi
