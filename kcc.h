@@ -16,6 +16,7 @@
 #define LEX_TOKEN_QUATE 10
 #define LEX_TOKEN_CORON 11
 #define LEX_TOKEN_EOL 12
+#define LEX_TOKEN_STR 13
 
 
 
