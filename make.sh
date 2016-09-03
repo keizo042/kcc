@@ -4,8 +4,17 @@ ROOT_DIR=`dirname $0`
 case $1 in
     "test")
         gcc -I $ROOT_DIR -c test/main.c -o test/main.o
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
         gcc -I $ROOT_DIR  -c kcc.c 
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
         gcc -I $ROOT_DIR kcc.o test/main.c -o $ROOT_DIR/test/test
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
         $ROOT_DIR/test/test
     ;;
     "cleanup" | "clean")
@@ -13,8 +22,17 @@ case $1 in
     ;;
     *)
         gcc -c kcc.c 
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
         gcc -c main.c
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
         gcc kcc.o main.o -o kcc
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
     ;;
 
 esac
