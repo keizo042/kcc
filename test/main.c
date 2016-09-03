@@ -3,27 +3,41 @@
 #include "kcc.h"
 #define BUF_LEN 10240 
 
-const char *src = "int func() {return 0; }";
+char *test1_code_function = "int func() {return 0; }";
+char *test2_code_comment = "// yuyushiki is awesome. //";
 
 
 int lex_test1(lex_tokens_t *l);
+int lex_test2_comment(lex_tokens_t *l);
 
 
 int
 main(int argc, char* argv[]) {
     
     FILE *fp;
-    char buf[BUF_LEN];
-    lex_state *l;
-    l = lex(buf);
-    if(l == NULL)
+    lex_state *l1, 
+              *l2;
+
+    l1 = lex(test1_code_function);
+    if(l1 == NULL)
     {
-        printf("lex return null ptr\n");
+        printf("test1: lex return null ptr\n");
         goto fail;
     }
-    if(lex_test1(l->head))
+    if(lex_test1(l1->head))
     {
         printf("lex_test1 fail\n");
+        goto fail;
+    }
+    l2 = lex(test2_code_comment);
+    if(l2 == NULL)
+    {
+        printf("test2: lex return null ptr\n");
+        goto fail;
+    }
+    if(lex_test2_comment(l2->head))
+    {
+        printf("test2: lex_test2 fail\n");
         goto fail;
     }
         
@@ -37,7 +51,35 @@ fail:
     return -1;
 }
 
-static lex_token_t expect_test1[] = {
+
+static lex_tokens_t * build_expect_tokens(lex_token_t *exp)
+{
+    lex_tokens_t *tokens = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
+    lex_tokens_t *ret;
+    ret = tokens;
+    for(int i =0; i < sizeof(exp) / sizeof(lex_tokens_t) ; i++)
+    {
+         tokens->token = &exp[i];
+         tokens->next = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
+         tokens = tokens->next;
+    }
+    tokens->next = NULL;
+    return ret;
+}
+
+static int expect_tokens_free(lex_tokens_t *tokens)
+{
+    lex_tokens_t *next = NULL;
+    while(tokens->next != NULL)
+    {
+    next = tokens->next;
+    free(tokens);
+    tokens = next;
+    }
+    return 0;
+}
+
+static lex_token_t test1_expect_tokens[] = {
     { .pos = 0,     .len = 3,   .line = 0,  "int",      LEX_TOKEN_TYPE      },
     { .pos = 5,     .len = 4,   .line = 0,  "func",     LEX_TOKEN_ID        },
     { .pos = 10,    .len = 1,   .line = 0,  "(",        LEX_TOKEN_BRACKET_L },
@@ -51,37 +93,36 @@ static lex_token_t expect_test1[] = {
     {}
 };
 
-static lex_tokens_t * build_expect_to_tokens(lex_token_t *exp)
+int lex_test1(lex_tokens_t *tokens)
 {
-    lex_tokens_t *tokens = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
-    lex_tokens_t *ret;
-    ret = tokens;
-    for(int i =0; i < sizeof(expect_test1) / sizeof(lex_tokens_t) ; i++)
+    lex_tokens_t *expect = build_expect_tokens(test1_expect_tokens);
+    if(tokens == NULL)
     {
-         tokens->token = &expect_test1[i];
-         tokens->next = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
-         tokens = tokens->next;
+        expect_tokens_free(expect);
+        return -1;
     }
-    tokens->next = NULL;
-    return ret;
-}
+    while(0)
+    {
+        if(tokens == NULL)
+        {
+            return -2;
+        
+        }
+    }
 
-static int test1_token_free(lex_tokens_t *tokens)
-{
-    lex_tokens_t *next = NULL;
-    while(tokens->next != NULL)
-    {
-    next = tokens->next;
-    free(tokens);
-    tokens = next;
-    }
+    expect_tokens_free(expect);
     return 0;
+
 }
 
-int lex_test1(lex_tokens_t *l)
-{
-    lex_tokens_t *tokens = build_expect_to_tokens(expect_test1);
+static lex_token_t test2_expect_tokens[] = {
+    {}
+};
 
-    test1_token_free(tokens);
+
+int lex_test2_comment(lex_tokens_t *tokens)
+{
+    lex_tokens_t *expect =  build_expect_tokens(test2_expect_tokens);
+    expect_tokens_free(expect);
     return 0;
 }
