@@ -8,7 +8,7 @@ case $1 in
         gcc -I $ROOT_DIR kcc.o test/main.c -o $ROOT_DIR/test/test
         $ROOT_DIR/test/test
     ;;
-    "clean")
+    "cleanup" | "clean")
         rm *.o  $ROOT_DIR/test/*.o kcc $ROOT_DIR/test/test
     ;;
     *)
