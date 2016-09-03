@@ -43,6 +43,7 @@ struct lex_tokens_s {
 
 
 struct lex_state_s {
+    char *src;
     lex_tokens_t *head;
     lex_tokens_t *data;
     lex_tokens_t *tail;
