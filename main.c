@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "kcc.h"
+#include <string.h>
 
 static char* text[] = {
     "usage : kcc [file] ",
@@ -19,8 +19,18 @@ void usage()
     }
 }
 
+void optparse()
+{
+}
+
 int
 main(int argc, char* argv[]) {
+
+    if( argc < 2)
+    {
+        usage();
+        return 0;
+    }
     
     return 0;
 }
