@@ -10,6 +10,13 @@ lex_state *lex(char *src)
     return tokens;
 }
 
+
+parser_state *parse(lex_state *lex)
+{
+    parser_state *parser = NULL;
+    return parser;
+}
+
 void compile()
 {
 }

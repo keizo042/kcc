@@ -31,9 +31,16 @@ struct lex_state_s {
     lex_tokens_t *tail;
 };
 
+struct parser_node_s;
+typedef struct parser_node_s parser_node_t;
+
+struct parser_state_s;
+typedef struct parser_state_s parser_state;
+
 
 void compile(const char *);
-lex_state *lex(char *);
+lex_state* lex(char *);
+parser_state* parse(lex_state *lex);
 
 #define LEX_TOKEN_BRACE_L 1
 #define LEX_TOKEN_BRACE_R 2
