@@ -118,7 +118,8 @@ static int lex_skip_commnet(lex_state *state)
         switch(state->src[token->pos])
         {
             case '\n':
-                return CONTINUE;
+                token->line++;
+                token->pos++;
             case '*':
                 token->pos++;
                 switch(state->src[token->pos])
@@ -151,7 +152,31 @@ static int lex_skip_until(lex_state *state, char c)
 
 static int lex_pragma(lex_state *state)
 {
+    int n = strncmp(state->src, "define", strlen("define"));
+    if(n == 0)
+    {
+    }
+    
+    n = strncmp(state->src, "include", strlen("include"));
+    if(n == 0)
+    {
+    }
+    n = strncmp(state->src, "pragma", strlen("pragma"));
+    if(n == 0)
+    {
+    }
 
+    n = strncmp(state->src, "if", strlen("if"));
+    if( n == 0)
+    {
+    }
+
+    n = strncmp(state->src, "ifndef", strlen("ifndef"));
+    if( n == 0 )
+    {
+    }
+
+    n = strncmp(state->src, "endif", strlen("endif"));
     return CONTINUE;
 }
 
