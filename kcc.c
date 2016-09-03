@@ -45,6 +45,71 @@ static int lex_emit(lex_state *state, uint64_t typ)
     }
 }
 
+static int lex_identify(lex_state *state)
+{
+    lex_token_t *token = state->data->token;
+
+    if(     'a' < state->src[token->pos] && 
+            'z' < state->src[token->pos] && 
+            'A' < state->src[token->pos] && 
+            state->src[token->pos] < 'Z')
+    {
+        return ERROR;
+    }
+    while(1)
+    {
+        if(state->src[token->pos + token->len] == ' ')
+        {
+            lex_emit(state, LEX_TOKEN_ID);
+            token->pos++;
+            break;
+        }
+        if( ('a' < state->src[token->pos + token->len ] && state->src[token->pos + token->len] < 'z')     || 
+            ('A' < state->src[token->pos + token->len ] && state->src[token->pos + token->len ] < 'Z')      ||
+            ('0' < state->src[token->pos + token->len ] && state->src[token->pos + token->len ] < '9')      )
+        {
+            token->len++;
+            continue;
+
+        }else
+        {
+            return ERROR;
+        }
+    }
+
+    return CONTINUE;
+
+}
+
+static int lex_string(lex_state *state)
+{
+    lex_token_t *token = state->data->token;
+    if( state->src[token->pos] != '"')
+    {
+        return ERROR;
+    }
+    token->pos++;
+    while(1)
+    {
+        if(state->src[token->pos + token->len] != '"')
+        {
+            token->len--;
+            lex_emit(state, LEX_TOKEN_STR);
+            lex_emit(state, LEX_TOKEN_QUATE);
+            return CONTINUE;
+
+        }
+        token->len++;
+    }
+
+    return CONTINUE;
+}
+static int lex_digit(lex_state *state)
+{
+    lex_token_t *token = state->data->token;
+    return CONTINUE;
+}
+
 static int lex_skip_commnet(lex_state *state)
 {
     lex_token_t *token = state->data->token;
@@ -116,19 +181,23 @@ static int lex_text(lex_state *state)
                         token->pos++;
                         return lex_skip_until(state, '\n');
                     default:
-                        goto fail;
+                        return ERROR;
 
                 }
             case '#':
                 token->pos++;
                 return lex_pragma(state);
+            case '"':
+                lex_emit(state, LEX_TOKEN_QUATE);
+                return lex_string(state);
+            default:
+                return ERROR;
 
         }
     }
 
     return DONE;
 
-fail:
     return  ERROR;
 }
 
