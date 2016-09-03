@@ -1,0 +1,6 @@
+/kcc
+*.o
+/test/test
+/test/*.o
+
+
