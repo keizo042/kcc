@@ -4,24 +4,25 @@
 #include "kcc.h"
 
 
-static char* lex_emit(lex_state *state, uint64_t typ)
+static int lex_emit(lex_state *state, uint64_t typ)
 {
+    return  0;
 }
 
-static char* lex_skip_commnet(lex_state *state, char *src)
+static char* lex_skip_commnet(lex_state *state, char *pos)
 {
     while(1)
     {
-        switch(*src)
+        switch(*pos)
         {
             case '*':
-                src++;
-                switch(src) {
+                pos++;
+                switch(*pos) {
                     case '/':
-                        src++;
-                        return src;
+                        pos++;
+                        return pos;
                     default:
-                        src++;
+                        pos++;
                 }
             default:
                 continue;
@@ -42,8 +43,9 @@ static char* lex_skip_until(lex_state *state, char *src, char c)
 }
 
 
-static char* lex_pragma(state, char *pos)
+static char* lex_pragma(lex_state *state, char *pos)
 {
+
     return pos;
 }
 
@@ -55,7 +57,7 @@ char *lex_identify(lex_state *state, char* src)
         switch(*pos)
         {
             case '/':
-                switch(pos)
+                switch(*pos)
                 {
                     case '*':
                         return lex_skip_commnet(state,  pos );
