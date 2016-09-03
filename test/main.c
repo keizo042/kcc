@@ -20,14 +20,15 @@ args_t* optparse(int argc, char **args)
 
 char *test1_code_function = "int func() {return 0; }";
 char *test2_code_comment = "// yuyushiki is awesome. //";
+char *test2_code_comments =  "/* Domo Geek=san.\nNinja Slayer desu\n*/";
 char *test3_code_pragma_digit = "#define PRAGMA 1";
-char *test4_code_pragma_str = "#define PRAGMAR ";
+char *test3_code_pragma_str = "#define STR \"string\" ";
 
 
-int lex_test1(lex_tokens_t *l);
-int lex_test2_comment(lex_tokens_t *l);
-int lex_test3_pragma_digit(lex_tokens_t *l);
-int lex_test4_pragma_str(lex_tokens_t *l);
+static int lex_test1(lex_tokens_t *l);
+static int lex_test2_comment(lex_tokens_t *l);
+static int lex_test3_pragma_digit(lex_tokens_t *l);
+static int lex_test3pragma_str(lex_tokens_t *l);
 
 
 int
@@ -164,9 +165,31 @@ static lex_token_t test2_expect_tokens[] = {
 };
 
 
-int lex_test2_comment(lex_tokens_t *tokens)
+static int lex_test2_comment(lex_tokens_t *tokens)
 {
     lex_tokens_t *expect =  build_expect_tokens(test2_expect_tokens);
     expect_tokens_free(expect);
     return 0;
 }
+
+static lex_token_t test2_comments_expect_tokens[] = {
+    {}
+};
+
+static int lex_test2_comments(lex_tokens_t *tokens)
+{
+    lex_tokens_t *expect = build_expect_tokens(test2_comments_expect_tokens);
+    expect_tokens_free(expect);
+    return 0;
+}
+
+static int lex_test3_pragma_digit(lex_tokens_t *tokens)
+{
+    return 0;
+}
+
+static int lex_test3_pragma_str(lex_tokens_t *tokens)
+{
+    return 0;
+}
+
