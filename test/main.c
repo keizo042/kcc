@@ -6,8 +6,6 @@
 const char *src = "int func() {return 0; }";
 
 
-
-
 int lex_test1(lex_tokens_t *l);
 
 
@@ -40,16 +38,16 @@ fail:
 }
 
 static lex_token_t expect_test1[] = {
-    {0,     3,  "int",      LEX_TOKEN_TYPE      },
-    {5,     4,  "func",     LEX_TOKEN_ID        },
-    {10,    1,  "(",        LEX_TOKEN_BRACKET_L },
-    {11,    1,  ")",        LEX_TOKEN_BRACKET_R },
-    {13,    1,  "{",        LEX_TOKEN_BRACE_R   },
-    {14,    6,  "return",   LEX_TOKEN_RETURN    },
-    {21,    1,  "0",        LEX_TOKEN_DIGIT     },
-    {22,    1,  ";",        LEX_TOKEN_SEMICORON },
-    {23,    1,  "}",        LEX_TOKEN_BRACE_R   },
-    {0,     0,  "",         LEX_TOKEN_EOL       },
+    { .pos = 0,     .len = 3,   .line = 0,  "int",      LEX_TOKEN_TYPE      },
+    { .pos = 5,     .len = 4,   .line = 0,  "func",     LEX_TOKEN_ID        },
+    { .pos = 10,    .len = 1,   .line = 0,  "(",        LEX_TOKEN_BRACKET_L },
+    { .pos = 11,    .len = 1,   .line = 0,  ")",        LEX_TOKEN_BRACKET_R },
+    { .pos = 13,    .len = 1,   .line = 0,  "{",        LEX_TOKEN_BRACE_R   },
+    { .pos = 14,    .len = 6,   .line = 0,  "return",   LEX_TOKEN_RETURN    },
+    { .pos = 21,    .len = 1,   .line = 0,  "0",        LEX_TOKEN_DIGIT     },
+    { .pos = 22,    .len = 1,   .line = 0,  ";",        LEX_TOKEN_SEMICORON },
+    { .pos = 23,    .len = 1,   .line = 0,  "}",        LEX_TOKEN_BRACE_R   },
+    { .pos = 0,     .len = 0,   .line = 0,  "",         LEX_TOKEN_EOL       },
     {}
 };
 

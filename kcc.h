@@ -14,6 +14,7 @@ typedef struct lex_state_s lex_state;
 struct lex_token_s {
     uint64_t pos;
     uint64_t len;
+    uint64_t line;
     char *sym;
     uint64_t typ;
 };
@@ -27,7 +28,7 @@ struct lex_tokens_s {
 
 struct lex_state_s {
     lex_tokens_t *head;
-    lex_token_t *data;
+    lex_tokens_t *data;
     lex_tokens_t *tail;
 };
 
