@@ -18,6 +18,7 @@
 #define LEX_TOKEN_EOL 12
 
 
+
 struct lex_token_s;
 typedef struct lex_token_s lex_token_t;
 
@@ -56,10 +57,10 @@ struct parser_state_s;
 typedef struct parser_state_s parser_state;
 
 
-
 void compile(const char *);
 lex_state* lex(char *);
 parser_state* parse(lex_state *lex);
+
 
 
 #endif // _KCC_H

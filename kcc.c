@@ -1,47 +1,66 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "kcc.h"
 
-/*
-static lex_token_t* token_new()
+#define ERROR -1
+#define DONE 0
+#define CONTINUE 1
+
+static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
         lex_token_t *token = (lex_token_t*)malloc( sizeof(struct lex_token_s));
-        token->pos  = 0;
-        token->len  = 0;
-        token->line = 0;
-        token->sym  = NULL;
-        token->typ = LEX_TOKEN_UNDEFINED;
+        token->pos  = pos;
+        token->len  = len;
+        token->line = line;
+        token->sym  = sym;
+        token->typ = typ;
         return token;
 }
-*/
 
 static int lex_emit(lex_state *state, uint64_t typ)
 {
-    lex_tokens_t *toks = NULL;
-    toks->token = NULL;
+    lex_tokens_t *toks = (lex_tokens_t*)malloc( sizeof(lex_tokens_t) );
+
+    lex_token_t *old = state->data->token;
+    old->typ =typ;
+    old->sym  = (char *)malloc( sizeof(char) * ( old->len + 1));
+    strncpy(old->sym, state->src + old->pos, old->len);
+    toks->token = lex_token_new(old->pos + old->len, 0, old->line, NULL , typ);
+
     state->data->next = toks;
     state->data = toks;
 
-    return  0;
+    state->data->token->pos++;
+
+    if( typ == LEX_TOKEN_EOL)
+    {
+        return DONE;
+    }else
+    {
+        return  CONTINUE;
+    }
 }
 
-static char* lex_skip_commnet(lex_state *state, char *pos)
+static int lex_skip_commnet(lex_state *state)
 {
+    lex_token_t *token = state->data->token;
     while(1)
     {
-        switch(*pos)
+        switch(state->src[token->pos])
         {
             case '\n':
-                return NULL;
+                return CONTINUE;
             case '*':
-                pos++;
-                switch(*pos) {
+                token->pos++;
+                switch(state->src[token->pos])
+                {
                     case '/':
-                        pos++;
-                        return pos;
+                        token->pos++;
+                        return CONTINUE;
                     default:
-                        pos++;
+                        token->pos++;
                 }
             default:
                 continue;
@@ -49,71 +68,76 @@ static char* lex_skip_commnet(lex_state *state, char *pos)
     }
 }
 
-static char* lex_skip_until(lex_state *state, char *src, char c)
+static int lex_skip_until(lex_state *state, char c)
 {
+    lex_token_t *token = state->data->token;
     while(1)
     {
-        if(*src == c)
+        if(state->src[token->pos] == c)
         {
-            return src;
+            return CONTINUE;
         }
-        src++;
+        token->pos++;
     }
 }
 
 
-static char* lex_pragma(lex_state *state, char *pos)
+static int lex_pragma(lex_state *state)
 {
 
-    return pos;
+    return CONTINUE;
 }
 
-static char *lex_identify(lex_state *state, char* src)
+static int lex_identify(lex_state *state)
 {
-    char *pos = src;
+    char *src = state->src;
+    lex_token_t *token = state->data->token;
     while(1)
     {
-        switch(*pos)
+        switch(src[token->pos])
         {
             case ' ':
             case '\t':
-                pos++;
+                token->pos++;
                 continue;
             case '\n':
             case '/':
-                switch(*pos)
+                switch(src[token->pos])
                 {
                     case '*':
-                        return lex_skip_commnet(state,  pos );
+                        return lex_skip_commnet(state);
                     case '/':
-                        return lex_skip_until(state, pos, '\n');
+                        return lex_skip_until(state, '\n');
                     default:
                         goto fail;
 
                 }
             case '#':
-                pos++;
-                return lex_pragma(state, pos);
+                token->pos++;
+                return lex_pragma(state);
 
         }
     }
 
-    return pos;
+    return DONE;
 
 fail:
-    return  NULL;
+    return  ERROR;
 }
 
 lex_state *lex(char *src)
 {
+    int c;
     lex_state *state = (lex_state*)malloc( sizeof(lex_state) );
     state->head = NULL;
     state->tail = NULL;
-    char *c = src;
+    state->data = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
+    state->data->token = lex_token_new(0, 0, 0, NULL, LEX_TOKEN_UNDEFINED);
+    state->src = src;
     while(0)
     {
-        c = lex_identify(state, c);
-        if(c == NULL)
+        c = lex_identify(state);
+        if(c != DONE)
         {
             break;
         }
