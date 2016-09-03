@@ -10,23 +10,25 @@
 
 static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
-        lex_token_t *token = (lex_token_t*)malloc( sizeof(struct lex_token_s));
+        lex_token_t *token = (lex_token_t*)malloc( sizeof(lex_token_t) );
         token->pos  = pos;
         token->len  = len;
         token->line = line;
         token->sym  = sym;
-        token->typ = typ;
+        token->typ  = typ;
         return token;
 }
 
 static int lex_emit(lex_state *state, uint64_t typ)
 {
     lex_tokens_t *toks = (lex_tokens_t*)malloc( sizeof(lex_tokens_t) );
-
     lex_token_t *old = state->data->token;
+
     old->typ =typ;
+
     old->sym  = (char *)malloc( sizeof(char) * ( old->len + 1));
     strncpy(old->sym, state->src + old->pos, old->len);
+
     toks->token = lex_token_new(old->pos + old->len, 0, old->line, NULL , typ);
 
     state->data->next = toks;
@@ -88,7 +90,7 @@ static int lex_pragma(lex_state *state)
     return CONTINUE;
 }
 
-static int lex_identify(lex_state *state)
+static int lex_text(lex_state *state)
 {
     char *src = state->src;
     lex_token_t *token = state->data->token;
@@ -101,12 +103,17 @@ static int lex_identify(lex_state *state)
                 token->pos++;
                 continue;
             case '\n':
+                token->line++;
+                token->pos++;
+                continue;
             case '/':
                 switch(src[token->pos])
                 {
                     case '*':
+                        token->pos++;
                         return lex_skip_commnet(state);
                     case '/':
+                        token->pos++;
                         return lex_skip_until(state, '\n');
                     default:
                         goto fail;
@@ -136,13 +143,18 @@ lex_state *lex(char *src)
     state->src = src;
     while(0)
     {
-        c = lex_identify(state);
+        c = lex_text(state);
         if(c != DONE)
         {
             break;
         }
     }
 
+    if(c == ERROR)
+    {
+        printf("lex fail");
+        return NULL;
+    }
     return state;
 }
 
