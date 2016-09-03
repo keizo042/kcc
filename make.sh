@@ -3,7 +3,7 @@ ROOT_DIR=`dirname $0`
 
 case $1 in
     "test")
-        gcc -I $ROOT_DIR -c test/main.c -o test/main.o
+        gcc -I$ROOT_DIR -c test/main.c -o test/main.o
         if [ $? -ne 0 ]; then
             exit $?
         fi

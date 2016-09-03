@@ -3,9 +3,26 @@
 #include <stdlib.h>
 #include "kcc.h"
 
+/*
+static lex_token_t* token_new()
+{
+        lex_token_t *token = (lex_token_t*)malloc( sizeof(struct lex_token_s));
+        token->pos  = 0;
+        token->len  = 0;
+        token->line = 0;
+        token->sym  = NULL;
+        token->typ = LEX_TOKEN_UNDEFINED;
+        return token;
+}
+*/
 
 static int lex_emit(lex_state *state, uint64_t typ)
 {
+    lex_tokens_t *toks = NULL;
+    toks->token = NULL;
+    state->data->next = toks;
+    state->data = toks;
+
     return  0;
 }
 
@@ -15,6 +32,8 @@ static char* lex_skip_commnet(lex_state *state, char *pos)
     {
         switch(*pos)
         {
+            case '\n':
+                return NULL;
             case '*':
                 pos++;
                 switch(*pos) {
@@ -49,13 +68,18 @@ static char* lex_pragma(lex_state *state, char *pos)
     return pos;
 }
 
-char *lex_identify(lex_state *state, char* src)
+static char *lex_identify(lex_state *state, char* src)
 {
     char *pos = src;
     while(1)
     {
         switch(*pos)
         {
+            case ' ':
+            case '\t':
+                pos++;
+                continue;
+            case '\n':
             case '/':
                 switch(*pos)
                 {
