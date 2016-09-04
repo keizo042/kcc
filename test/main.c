@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "kcc.h"
 #define BUF_LEN 10240 
 
@@ -28,7 +29,7 @@ char *test3_code_pragma_str = "#define STR \"string\" ";
 static int lex_test1(lex_tokens_t *l);
 static int lex_test2_comment(lex_tokens_t *l);
 static int lex_test3_pragma_digit(lex_tokens_t *l);
-static int lex_test3pragma_str(lex_tokens_t *l);
+static int lex_test3_pragma_str(lex_tokens_t *tokens);
 
 
 int
@@ -38,6 +39,8 @@ main(int argc, char* argv[]) {
     int flag = 0;
     lex_state *l1, 
               *l2;
+    lex_state *l3digit,
+              *l3str;
 
     l1 = lex(test1_code_function);
     if(l1 == NULL)
@@ -47,7 +50,7 @@ main(int argc, char* argv[]) {
         goto test1_end;
     }else
     {
-        printf("test1:\n");
+        printf("test1:lex pass...\n");
     }
 
     if(lex_test1(l1->head))
@@ -69,7 +72,7 @@ test1_end:
         goto test2_end;
     }else
     {
-        printf("test2:\n");
+        printf("test2:lex pass..\n");
     }
 
     if(lex_test2_comment(l2->head))
@@ -82,6 +85,28 @@ test1_end:
         printf("test2:\n");
     }
 test2_end:
+
+
+    l3digit = lex(test3_code_pragma_digit);
+    if(lex_test3_pragma_digit(l3digit->head) != 0)
+    {
+        flag =1;
+        printf("test3: fail\n");
+        goto test3_end;
+    }else
+    {
+    }
+
+    l3str = lex(test3_code_pragma_str);
+    if(lex_test3_pragma_str(l3str->head) != 0)
+    {
+        printf("test3: fail");
+        flag = 1;
+        goto test3_end;
+    }else
+    {
+    }
+test3_end:
         
 
     if(flag == 0)
@@ -161,35 +186,85 @@ int lex_test1(lex_tokens_t *tokens)
 }
 
 static lex_token_t test2_expect_tokens[] = {
+    {.typ = LEX_TOKEN_EOL},
     {}
+    
 };
 
 
 static int lex_test2_comment(lex_tokens_t *tokens)
 {
     lex_tokens_t *expect =  build_expect_tokens(test2_expect_tokens);
+    if( tokens == NULL)
+    {
+        return -1;
+    }
+
+    lex_tokens_t *e = expect,
+                *t = tokens;
+    while(t != NULL)
+    {
+        if(e->token->pos !=  t->token->pos)
+        {
+            return -2;
+        }
+
+        if(e->token->len != t->token->len)
+        {
+            return -3;
+        }
+
+        if(strcmp(e->token->sym, t->token->sym) != 0)
+        {
+            return -4;
+        }
+        
+        if(e->token->line != t->token->line)
+        {
+            return -5;
+        }
+        if(e->token->typ != e->token->typ)
+        {
+            return -6;
+        }
+        e = e->next;
+        t = t->next;
+
+    }
     expect_tokens_free(expect);
     return 0;
 }
 
 static lex_token_t test2_comments_expect_tokens[] = {
-    {}
+    {.typ = LEX_TOKEN_EOL}
 };
 
 static int lex_test2_comments(lex_tokens_t *tokens)
 {
     lex_tokens_t *expect = build_expect_tokens(test2_comments_expect_tokens);
     expect_tokens_free(expect);
-    return 0;
+    return -1;
 }
+
+static lex_token_t test3_pragma_digit_expect_tokens[] = {
+    {.typ = LEX_TOKEN_EOL},
+    {}
+};
 
 static int lex_test3_pragma_digit(lex_tokens_t *tokens)
 {
-    return 0;
+    lex_tokens_t *expect = build_expect_tokens(test3_pragma_digit_expect_tokens);
+    return -1;
 }
+
+static lex_token_t test3_pragma_str_tokens[] = {
+    {.typ = LEX_TOKEN_EOL},
+    {}
+};
 
 static int lex_test3_pragma_str(lex_tokens_t *tokens)
 {
-    return 0;
+    lex_tokens_t *expect = build_expect_tokens(test3_pragma_str_tokens);
+    return -1;
 }
 
