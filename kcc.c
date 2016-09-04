@@ -47,14 +47,14 @@ static int lex_emit(lex_state *state, uint64_t typ)
 
 static int lex_token(lex_state *state)
 {
-    for(state->src[state->data->token->pos] == ' ')
+    while(state->src[state->data->token->pos] == ' ')
     {
         state->data->token->pos++;
     }
 
     if(     'a' < state->src[state->data->token->pos]   &&
             state->src[state->data->token->pos] < 'z'   &&
-            'A' < state-src[state->data->token->pos]    &&
+            'A' < state->src[state->data->token->pos]    &&
             state->src[state->data->token->pos] < 'Z')
     {
 
@@ -169,31 +169,31 @@ static int lex_skip_until(lex_state *state, char c)
 
 static int lex_pragma(lex_state *state)
 {
-    int n = strncmp(state->src, "define", strlen("define"));
+    int n = strncmp(state->src + state->data->token->pos, "define", strlen("define"));
     if(n == 0)
     {
     }
     
-    n = strncmp(state->src, "include", strlen("include"));
+    n = strncmp(state->src + state->data->token->pos, "include", strlen("include"));
     if(n == 0)
     {
     }
-    n = strncmp(state->src, "pragma", strlen("pragma"));
+    n = strncmp(state->src + state->data->token->pos, "pragma", strlen("pragma"));
     if(n == 0)
     {
     }
 
-    n = strncmp(state->src, "if", strlen("if"));
+    n = strncmp(state->src + state->data->token->pos, "if", strlen("if"));
     if( n == 0)
     {
     }
 
-    n = strncmp(state->src, "ifndef", strlen("ifndef"));
+    n = strncmp(state->src + state->data->token->pos, "ifndef", strlen("ifndef"));
     if( n == 0 )
     {
     }
 
-    n = strncmp(state->src, "endif", strlen("endif"));
+    n = strncmp(state->src + state->data->token->pos, "endif", strlen("endif"));
     if( n == 0)
     {
     }
@@ -239,7 +239,7 @@ static int lex_text(lex_state *state)
                 lex_emit(state, LEX_TOKEN_QUATE);
                 return lex_string(state);
             default:
-                if(strncmp(src[token->pos], "int", strlen("int")) == 0)
+                if(strncmp(src + token->pos, "int", strlen("int")) == 0)
                 {
                     token->pos += strlen("int");
                     lex_emit(state, LEX_TOKEN_TYPE);
