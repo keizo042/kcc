@@ -45,6 +45,23 @@ static int lex_emit(lex_state *state, uint64_t typ)
     }
 }
 
+static int lex_token(lex_state *state)
+{
+    for(state->src[state->data->token->pos] == ' ')
+    {
+        state->data->token->pos++;
+    }
+
+    if(     'a' < state->src[state->data->token->pos]   &&
+            state->src[state->data->token->pos] < 'z'   &&
+            'A' < state-src[state->data->token->pos]    &&
+            state->src[state->data->token->pos] < 'Z')
+    {
+
+    }
+    return 0;
+}
+
 static int lex_identify(lex_state *state)
 {
     lex_token_t *token = state->data->token;
@@ -177,6 +194,9 @@ static int lex_pragma(lex_state *state)
     }
 
     n = strncmp(state->src, "endif", strlen("endif"));
+    if( n == 0)
+    {
+    }
     return CONTINUE;
 }
 
@@ -188,6 +208,9 @@ static int lex_text(lex_state *state)
     {
         switch(src[token->pos])
         {
+            case '\0':
+                lex_emit(state, LEX_TOKEN_EOL);
+                return DONE;
             case ' ':
             case '\t':
                 token->pos++;
@@ -216,7 +239,13 @@ static int lex_text(lex_state *state)
                 lex_emit(state, LEX_TOKEN_QUATE);
                 return lex_string(state);
             default:
-                return ERROR;
+                if(strncmp(src[token->pos], "int", strlen("int")) == 0)
+                {
+                    token->pos += strlen("int");
+                    lex_emit(state, LEX_TOKEN_TYPE);
+                    return lex_token(state);
+                }
+
 
         }
     }
