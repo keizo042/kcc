@@ -7,25 +7,25 @@ case $1 in
         if [ $? -ne 0 ]; then
             exit $?
         fi
-        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test1.c -o $ROOT_DIR/test/test1
-        ./test/test1
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test1.c -o $ROOT_DIR/test/test1.out
+        ./test/test1.out
         if [ $? -ne 0 ]; then
             echo "fail"
 
         fi
-        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test2.c -o $ROOT_DIR/test/test2
-        ./test/test2
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test2.c -o $ROOT_DIR/test/test2.out
+        ./test/test2.out
         if [ $? -ne 0 ]; then
             echo "fail"
         fi
-        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test3.c -o $ROOT_DIR/test/test3
-        ./test/test3
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test3.c -o $ROOT_DIR/test/test3.out
+        ./test/test3.out
         if [ $? -ne 0 ]; then
             echo "fail"
         fi
     ;;
     "cleanup" | "clean")
-        rm *.o  $ROOT_DIR/test/*.o kcc $ROOT_DIR/test/test
+        rm *.o  $ROOT_DIR/test/*.o kcc $ROOT_DIR/test/*.out
     ;;
     *)
         echo "gcc -c kcc.c..."
