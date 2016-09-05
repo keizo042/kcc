@@ -341,7 +341,6 @@ lex_state *lex(char *src)
 
     if(c == ERROR)
     {
-        printf("lex fail");
         return NULL;
     }
     return state;
