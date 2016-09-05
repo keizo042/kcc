@@ -59,8 +59,6 @@ test3_end:
 
 
 
-
-
 static lex_token_t test3_pragma_digit_expect_tokens[] = {
     {.typ = LEX_TOKEN_EOL},
     {}
@@ -77,12 +75,6 @@ static int lex_test3_pragma_digit(lex_tokens_t *tokens)
         if(t == NULL && e == NULL)
             break;
 
-        if(t->token->pos != e->token->pos)
-            return -1;
-        if(t->token->len != e->token->len)
-            return -2;
-        if(t->token->line != e->token->line)
-            return -3;
         if(strcmp(t->token->sym, e->token->sym) != 0)
             return -4;
         if(t->token->typ != e->token->typ)
@@ -102,6 +94,25 @@ static lex_token_t test3_pragma_str_tokens[] = {
 static int lex_test3_pragma_str(lex_tokens_t *tokens)
 {
     lex_tokens_t *expect = build_expect_tokens(test3_pragma_str_tokens);
-    return -1;
+    lex_tokens_t *e = expect,
+                 *t = tokens;
+        
+
+    while(1)
+    {
+        if(e == NULL && t == NULL)
+        {
+            break;
+        }
+        if(strcmp(e->token->sym,t->token->sym) != 0)
+        {
+            return -1;
+        }
+        if(e->token->typ != t->token->typ)
+        {
+            return -2;
+        }
+    }
+    return 0;
 }
 
