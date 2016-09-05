@@ -157,7 +157,7 @@ static int lex_digit(lex_state *state)
             token->len++;
         }
     }
-    if(state->src[token->pos +  token->len] == ' ')
+    if(state->src[token->pos +  token->len] == ' ' || state->src[token->pos + token->len] == '\0' || state->src[token->pos + token->len] == '\t' || state->src[token->pos + token->len] == '\n')
     {
         token->len--;
         goto accept;
