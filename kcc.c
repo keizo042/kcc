@@ -4,9 +4,6 @@
 #include <string.h>
 #include "kcc.h"
 
-#define ERROR -1
-#define DONE 0
-#define CONTINUE 1
 
 static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
@@ -32,90 +29,54 @@ static lex_state* lex_state_open(char *src)
 
 static int lex_emit(lex_state *state, uint64_t typ)
 {
-    lex_tokens_t *toks = (lex_tokens_t*)malloc( sizeof(lex_tokens_t) );
+    lex_tokens_t *new_tokens = (lex_tokens_t*)malloc( sizeof(lex_tokens_t) );
     lex_token_t *old = state->data->token;
 
-    old->typ =typ;
+    old->typ = typ;
 
     old->sym  = (char *)malloc( sizeof(char) * ( old->len + 1));
     strncpy(old->sym, state->src + old->pos, old->len);
 
-    toks->token = lex_token_new(old->pos + old->len, 0, old->line, NULL , typ);
+    new_tokens->token = lex_token_new(old->pos + old->len, 0, old->line, NULL , typ);
 
-    state->data->next = toks;
-    state->data = toks;
+    state->data->next = new_tokens;
+    state->data = new_tokens;
 
-    state->data->token->pos++;
 
     if( typ == LEX_TOKEN_EOL)
     {
         return DONE;
     }else
     {
+        state->data->token->pos++;
         return  CONTINUE;
     }
 }
 
+
 static int lex_token(lex_state *state)
 {
 
-    if(     'a' < state->src[state->data->token->pos]   &&
-            state->src[state->data->token->pos] < 'z'   &&
-            'A' < state->src[state->data->token->pos]   &&
-            state->src[state->data->token->pos] < 'Z')
-    {
-        state->data->token->pos++;
-
-        while(1)
-        {
-            if(     'a' < state->src[state->data->token->pos]   &&
-                    state->src[state->data->token->pos] < 'z'   &&
-                    'A' < state->src[state->data->token->pos]   &&
-                    state->src[state->data->token->pos] < 'Z'   &&
-                    '0' < state->src[state->data->token->pos]   &&
-                    state->src[state->data->token->pos] < '9' )
-            {
-            }
-        }
-
-    }
-    return 0;
-}
-
-static int lex_identify(lex_state *state)
-{
     lex_token_t *token = state->data->token;
-
-    if(     'a' < state->src[token->pos] && 
-            'z' < state->src[token->pos] && 
-            'A' < state->src[token->pos] && 
-            state->src[token->pos] < 'Z')
+    if( !ISASCII(state->src[token->pos]))
     {
-        return ERROR;
+        return ERR;
     }
+    token->len++;
+
     while(1)
     {
-        if(state->src[token->pos + token->len] == ' ')
-        {
-            lex_emit(state, LEX_TOKEN_ID);
-            token->pos++;
-            break;
-        }
-        if( ('a' < state->src[token->pos + token->len ] && state->src[token->pos + token->len] < 'z')     || 
-            ('A' < state->src[token->pos + token->len ] && state->src[token->pos + token->len ] < 'Z')      ||
-            ('0' < state->src[token->pos + token->len ] && state->src[token->pos + token->len ] < '9')      )
+        if( ISASCII(state->src[token->pos + token->len]) || ISDIGIT(state->src[token->len]) )      
         {
             token->len++;
-            continue;
-
-        }else
-        {
-            return ERROR;
+        }{
+            token->len--;
+            lex_emit(state, LEX_TOKEN_TOKEN);
+            break;
         }
     }
 
     return CONTINUE;
-
 }
 
 static int lex_string(lex_state *state)
@@ -123,7 +84,7 @@ static int lex_string(lex_state *state)
     lex_token_t *token = state->data->token;
     if( state->src[token->pos] != '"')
     {
-        return ERROR;
+        return ERR;
     }
     token->pos++;
     while(1)
@@ -132,7 +93,6 @@ static int lex_string(lex_state *state)
         {
             token->len--;
             lex_emit(state, LEX_TOKEN_STR);
-            lex_emit(state, LEX_TOKEN_QUATE);
             return CONTINUE;
 
         }
@@ -141,61 +101,74 @@ static int lex_string(lex_state *state)
 
     return CONTINUE;
 }
+
 static int lex_digit(lex_state *state)
 {
     lex_token_t *token = state->data->token;
     while(1)
     {
-        if( state->src[token->pos] < '0' && '9' < state->src[token->pos] )
+        if( ISDIGIT(state->src[token->pos + token->len]) )
         {
+            token->len++;
+            continue;
+        }
 
-            if(state->src[token->pos] == ' ')
+        if(state->src[token->pos + token->len] == ' ')
+        {
+            token->len--;
+            goto accept;
+        }else
+        {
+            break;
+        }
+
+    }
+
+    if(state->src[token->pos + token->len] == '.')
+    {
+        token->len++;
+        while(1)
+        {
+            if(ISDIGIT(state->src[token->pos + token->len]) )
             {
-                token->pos--;
-                break;
+                token->len++;
+                continue;
+            }
+            if(state->src[token->pos + token->len] == ' ')
+            {
+                token->len--;
+                goto accept;
             }else
             {
-                if(state->src[token->pos] == '.')
-                {
-                    token->pos++;
-                    while(1)
-                    {
-                        if( state->src[token->pos] < '0' && '9' < state->src[token->pos] )
-                        {
-                            if(state->src[token->pos] == ' ')
-                            {
-                                lex_emit(state, LEX_TOKEN_DIGIT);
-                                return CONTINUE;
-                            }else
-                            {
-
-                                if(state->src[token->pos] == 'e')
-                                {
-                                    token->pos++;
-
-                                    while(1)
-                                    {
-                                        if('1' < state->src[token->pos] && state->src[token->pos] < '9')
-                                        {
-                                            token->pos++;
-                                        }else
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                            token->pos++;
-
-                    }
-
-                }
+                break;
             }
-
         }
-            token->pos++;
     }
+
+    if(state->src[token->pos + token->len] == 'e')
+    {
+        token->len++;
+        while(1)
+        {
+            if( !ISDIGIT(state->src[token->pos + token->len]) )
+            {
+                break;
+            }
+            token->len++;
+        }
+    }
+    if(state->src[token->pos +  token->len] == ' ')
+    {
+        token->len--;
+        goto accept;
+    }
+
+
+fail:
+    return ERR;
+
+accept:
+    lex_emit(state, LEX_TOKEN_DIGIT);
     return CONTINUE;
 }
 
@@ -223,6 +196,15 @@ static int lex_skip_commnet(lex_state *state)
                 continue;
         }
     }
+}
+
+static int lex_skip_brank(lex_state *state)
+{
+    while(state->src[state->data->token->pos] == ' ')
+    {
+        state->data->token->pos++;
+    }
+    return CONTINUE;
 }
 
 static int lex_skip_until(lex_state *state, char c)
@@ -301,20 +283,20 @@ static int lex_text(lex_state *state)
                         token->pos++;
                         return lex_skip_until(state, '\n');
                     default:
-                        return ERROR;
+                        return ERR;
 
                 }
             case '#':
                 token->pos++;
                 return lex_pragma(state);
             case '"':
-                lex_emit(state, LEX_TOKEN_QUATE);
                 return lex_string(state);
             default:
                 if(strncmp(src + token->pos, "int", strlen("int")) == 0)
                 {
                     token->pos += strlen("int");
                     lex_emit(state, LEX_TOKEN_TYPE);
+                    lex_skip_brank(state);
                     return lex_token(state);
                 }
 
@@ -328,7 +310,7 @@ static int lex_text(lex_state *state)
 
 lex_state *lex(char *src)
 {
-    int c = ERROR;
+    int c = ERR;
     lex_state *state = lex_state_open(src);
     while(0)
     {
@@ -339,7 +321,7 @@ lex_state *lex(char *src)
         }
     }
 
-    if(c == ERROR)
+    if(c == ERR)
     {
         return NULL;
     }
@@ -371,18 +353,18 @@ test utility
 int test_lex_digit(char *src)
 {
     lex_state *state = lex_state_open(src);
-    return 0;
+    return lex_digit(state);
 }
 
 int test_lex_string(char *src)
 {
     lex_state *state = lex_state_open(src);
-    return 0;
+    return lex_string(state);
 }
 
 int test_lex_skip_comment(char *src)
 {
     lex_state *state = lex_state_open(src);
-    return 0;
+    return lex_skip_commnet(state);
 }
 

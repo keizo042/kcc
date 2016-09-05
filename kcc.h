@@ -3,6 +3,10 @@
 
 #include "stdint.h"
 
+#define ERR -1
+#define DONE 0
+#define CONTINUE 1
+
 #define LEX_TOKEN_UNDEFINED 0
 #define LEX_TOKEN_BRACE_L 1
 #define LEX_TOKEN_BRACE_R 2
@@ -13,12 +17,14 @@
 #define LEX_TOKEN_DIGIT 7
 #define LEX_TOKEN_TYPE 8
 #define LEX_TOKEN_ID 9
-#define LEX_TOKEN_QUATE 10
+#define LEX_TOKEN_TOKEN 10
 #define LEX_TOKEN_CORON 11
 #define LEX_TOKEN_EOL 12
 #define LEX_TOKEN_STR 13
 
 
+#define ISDIGIT(chr) ( '0' <= chr && chr <= '9')
+#define ISASCII(chr) (('a' <= chr && chr <= 'z') || ('A' <= chr && 'Z'))
 
 struct lex_token_s;
 typedef struct lex_token_s lex_token_t;
