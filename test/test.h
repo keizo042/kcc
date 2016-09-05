@@ -51,5 +51,5 @@ int expect_tokens_free(lex_tokens_t *tokens)
     return 0;
 }
 
-#define ERROR(test,name,result) fprintf(stdout,"%s: %s: %s\n",test,name,result)
+#define ERROR(test,name,result) fprintf(stdout,"%s : %s - %s\n",test,name,result)
 #endif
