@@ -31,6 +31,14 @@ int lex_test1(lex_tokens_t *tokens)
         {
             break;
         }
+        if(e->token->sym == NULL)
+        {
+            printf("not well-defined test data");
+        }
+        if(t->token->sym == NULL)
+        {
+            return -1;
+        }
         if(strncmp(e->token->sym, t->token->sym, strlen(e->token->sym)) != 0)
         {
             return -1;

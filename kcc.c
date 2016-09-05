@@ -19,6 +19,17 @@ static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char
         return token;
 }
 
+static lex_state* lex_state_open(char *src)
+{
+    lex_state *state = (lex_state*)malloc( sizeof(lex_state) );
+    state->head = NULL;
+    state->tail = NULL;
+    state->data = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
+    state->data->token = lex_token_new(0, 0, 0, NULL, LEX_TOKEN_UNDEFINED);
+    state->src = src;
+    return state;
+}
+
 static int lex_emit(lex_state *state, uint64_t typ)
 {
     lex_tokens_t *toks = (lex_tokens_t*)malloc( sizeof(lex_tokens_t) );
@@ -47,16 +58,25 @@ static int lex_emit(lex_state *state, uint64_t typ)
 
 static int lex_token(lex_state *state)
 {
-    while(state->src[state->data->token->pos] == ' ')
-    {
-        state->data->token->pos++;
-    }
 
     if(     'a' < state->src[state->data->token->pos]   &&
             state->src[state->data->token->pos] < 'z'   &&
-            'A' < state->src[state->data->token->pos]    &&
+            'A' < state->src[state->data->token->pos]   &&
             state->src[state->data->token->pos] < 'Z')
     {
+        state->data->token->pos++;
+
+        while(1)
+        {
+            if(     'a' < state->src[state->data->token->pos]   &&
+                    state->src[state->data->token->pos] < 'z'   &&
+                    'A' < state->src[state->data->token->pos]   &&
+                    state->src[state->data->token->pos] < 'Z'   &&
+                    '0' < state->src[state->data->token->pos]   &&
+                    state->src[state->data->token->pos] < '9' )
+            {
+            }
+        }
 
     }
     return 0;
@@ -124,6 +144,58 @@ static int lex_string(lex_state *state)
 static int lex_digit(lex_state *state)
 {
     lex_token_t *token = state->data->token;
+    while(1)
+    {
+        if( state->src[token->pos] < '0' && '9' < state->src[token->pos] )
+        {
+
+            if(state->src[token->pos] == ' ')
+            {
+                token->pos--;
+                break;
+            }else
+            {
+                if(state->src[token->pos] == '.')
+                {
+                    token->pos++;
+                    while(1)
+                    {
+                        if( state->src[token->pos] < '0' && '9' < state->src[token->pos] )
+                        {
+                            if(state->src[token->pos] == ' ')
+                            {
+                                lex_emit(state, LEX_TOKEN_DIGIT);
+                                return CONTINUE;
+                            }else
+                            {
+
+                                if(state->src[token->pos] == 'e')
+                                {
+                                    token->pos++;
+
+                                    while(1)
+                                    {
+                                        if('1' < state->src[token->pos] && state->src[token->pos] < '9')
+                                        {
+                                            token->pos++;
+                                        }else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                            token->pos++;
+
+                    }
+
+                }
+            }
+
+        }
+            token->pos++;
+    }
     return CONTINUE;
 }
 
@@ -252,18 +324,12 @@ static int lex_text(lex_state *state)
 
     return DONE;
 
-    return  ERROR;
 }
 
 lex_state *lex(char *src)
 {
-    int c;
-    lex_state *state = (lex_state*)malloc( sizeof(lex_state) );
-    state->head = NULL;
-    state->tail = NULL;
-    state->data = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
-    state->data->token = lex_token_new(0, 0, 0, NULL, LEX_TOKEN_UNDEFINED);
-    state->src = src;
+    int c = ERROR;
+    lex_state *state = lex_state_open(src);
     while(0)
     {
         c = lex_text(state);
@@ -291,3 +357,33 @@ parser_state *parse(lex_state *lex)
 void compile(const char *src)
 {
 }
+
+
+
+
+
+/*
+
+test utility 
+
+*/
+
+
+int test_lex_digit(char *src)
+{
+    lex_state *state = lex_state_open(src);
+    return 0;
+}
+
+int test_lex_string(char *src)
+{
+    lex_state *state = lex_state_open(src);
+    return 0;
+}
+
+int test_lex_skip_comment(char *src)
+{
+    lex_state *state = lex_state_open(src);
+    return 0;
+}
+

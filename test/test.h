@@ -50,4 +50,6 @@ int expect_tokens_free(lex_tokens_t *tokens)
     }
     return 0;
 }
+
+#define ERROR(test,name,result) fprintf(stdout,"%s:\t%s:%s",test,name,result)
 #endif

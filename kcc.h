@@ -63,5 +63,8 @@ lex_state* lex(char *);
 parser_state* parse(lex_state *lex);
 
 
+//test utility
+int lex_test_digit(char *src);
+int lex_test_string(char *src);
 
 #endif // _KCC_H

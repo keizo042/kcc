@@ -40,7 +40,7 @@ static int lex_test2_comment(lex_tokens_t *tokens)
         {
             return -5;
         }
-        if(e->token->typ != e->token->typ)
+        if(e->token->typ != t->token->typ)
         {
             return -6;
         }
@@ -65,12 +65,13 @@ static int lex_test2_comments(lex_tokens_t *tokens)
 
 int main()
 {
-    lex_state *l2 = NULL;
+    lex_state *l2comment    =   NULL,
+              *l2comments   =   NULL;
     int flag = 0;
     printf("test2:start\n");
 
-    l2 = lex(test2_code_comment);
-    if(l2 == NULL)
+    l2comment = lex(test2_code_comment);
+    if(l2comment == NULL)
     {
         flag = 1;
         printf("test2: lex return null ptr\n");
@@ -80,7 +81,7 @@ int main()
         printf("test2:lex pass..\n");
     }
 
-    if(lex_test2_comment(l2->head))
+    if(lex_test2_comment(l2comment->head))
     {
         flag = 1;
         printf("test2: lex_test2 fail\n");
@@ -89,6 +90,19 @@ int main()
     {
         printf("test2:\n");
     }
+    l2comments = lex(test2_code_comments);
+    if(l2comments == NULL)
+    {
+        printf("test2 comments null ptr\n");
+        goto test2_end;
+    }
+
+    if(lex_test2_comments(l2comments->head) != 0)
+    {
+        printf("test2: fail"); 
+        goto test2_end;
+    }
+            
 test2_end:
 
     if(flag == 0)
