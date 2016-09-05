@@ -13,46 +13,35 @@ int main()
     lex_state *l3digit,
               *l3str;
 
-    printf("test3:start\n");
     l3digit = lex(test3_code_pragma_digit);
     if(l3digit == NULL)
     {
         flag = 1;
-        printf("test3: null ptr\n");
+        ERROR("test3", "test3_code_pragma_digit", "fail to lex");
         goto test3_end;
 
-    }else
-    {
-        printf("test3:\n");
     }
     if(lex_test3_pragma_digit(l3digit->head) != 0)
     {
         flag =1;
-        printf("test3: fail\n");
         goto test3_end;
-    }else
-    {
     }
-
     l3str = lex(test3_code_pragma_str);
     if(lex_test3_pragma_str(l3str->head) != 0)
     {
-        printf("test3: fail");
+        ERROR("test3", "lex_test3_pragma_str","fail");
         flag = 1;
         goto test3_end;
-    }else
-    {
+
     }
 test3_end:
         
 
     if(flag == 0)
     {
-    printf("test pass!\n");
     return 0;
     }else
     {
-    printf("test fail...\n");
     return -1;
     }
 }
@@ -73,12 +62,20 @@ static int lex_test3_pragma_digit(lex_tokens_t *tokens)
     while(1)
     {
         if(t == NULL && e == NULL)
+        {
             break;
+        }
 
         if(strcmp(t->token->sym, e->token->sym) != 0)
+        {
+            ERROR("test3", "lex_test3_pragma_digit", "mismatch sym");
             return -4;
+        }
         if(t->token->typ != e->token->typ)
+        {
+            ERROR("test3", "lex_test3_pragma_digit", "mismatch type");
             return -5;
+        }
 
         t = t->next;
         e = e->next;
@@ -106,10 +103,12 @@ static int lex_test3_pragma_str(lex_tokens_t *tokens)
         }
         if(strcmp(e->token->sym,t->token->sym) != 0)
         {
+            ERROR("test3", "lex_test3_pragma_str", "mismatch symbol");
             return -1;
         }
         if(e->token->typ != t->token->typ)
         {
+            ERROR("test3", "lex_test3_pragma_str", "mismatch type");
             return -2;
         }
     }

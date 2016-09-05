@@ -12,15 +12,17 @@ main(int argc, char* argv[]) {
 
     if(test_lex_string(test1) != 0)
     {
+        ERROR("test_lex_string", "test1", "fail");
         printf("fail");
     }
     if(test_lex_string(test2) != 0)
     {
+        ERROR("test_lex_string", "test2", "fail");
         printf("fail");
     }
     if(test_lex_string(test3) == 0)
     {
-        printf("fail");
+        ERROR("test_lex_string", "test3", "fail");
     }
 
     

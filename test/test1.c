@@ -33,19 +33,22 @@ int lex_test1(lex_tokens_t *tokens)
         }
         if(e->token->sym == NULL)
         {
-            printf("not well-defined test data");
+            ERROR("test1","test1", "expect token error");
         }
         if(t->token->sym == NULL)
         {
+            ERROR("test1","test1", "token error");
             return -1;
         }
         if(strncmp(e->token->sym, t->token->sym, strlen(e->token->sym)) != 0)
         {
+            ERROR("test1","test1", "mismatch token");
             return -1;
         }
 
         if(e->token->typ != t->token->typ)
         {
+            ERROR("test1","test1", "mismatch type");
             return -2;
         }
         e = e->next;
@@ -62,36 +65,27 @@ int main()
     int flag =0;
     lex_state *l;
         
-    printf("test1: start\n");
     l = lex(test1_code_function);
     if(l == NULL)
     {
         flag = 1;
-        printf("test1: lex return null ptr\n");
+        ERROR("test1","ptr check", "null");
         goto test1_end;
     }else
-    {
-        printf("test1:lex pass...\n");
-    }
 
     if(lex_test1(l->head))
     {
         flag = 1;
-        printf("lex_test1 fail\n");
+        ERROR("test1","lex_test1", "fail");
         goto test1_end;
     }else
-    {
-        printf("test1:\n");
-    }
 test1_end:
 
     if(flag == 0)
     {
-    printf("test pass!\n");
     return 0;
     }else
     {
-    printf("test fail...\n");
     return -1;
     }
 }
