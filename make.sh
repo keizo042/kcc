@@ -3,19 +3,26 @@ ROOT_DIR=`dirname $0`
 
 case $1 in
     "test")
-        gcc -I$ROOT_DIR -c test/main.c -o test/main.o
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test -c kcc.c 
         if [ $? -ne 0 ]; then
             exit $?
         fi
-        gcc -I $ROOT_DIR  -c kcc.c 
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test1.c -o $ROOT_DIR/test/test1
+        ./test/test1
         if [ $? -ne 0 ]; then
-            exit $?
+            echo "fail"
+
         fi
-        gcc -I $ROOT_DIR kcc.o test/main.c -o $ROOT_DIR/test/test
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test2.c -o $ROOT_DIR/test/test2
+        ./test/test2
         if [ $? -ne 0 ]; then
-            exit $?
+            echo "fail"
         fi
-        $ROOT_DIR/test/test
+        gcc -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test3.c -o $ROOT_DIR/test/test3
+        ./test/test3
+        if [ $? -ne 0 ]; then
+            echo "fail"
+        fi
     ;;
     "cleanup" | "clean")
         rm *.o  $ROOT_DIR/test/*.o kcc $ROOT_DIR/test/test
