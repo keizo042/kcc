@@ -288,6 +288,6 @@ parser_state *parse(lex_state *lex)
     return parser;
 }
 
-void compile()
+void compile(const char *src)
 {
 }
