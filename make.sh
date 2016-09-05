@@ -3,22 +3,22 @@ ROOT_DIR=`dirname $0`
 
 case $1 in
     "test")
-        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test -c kcc.c 
+        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test -DDEBUG -c kcc.c 
         if [ $? -ne 0 ]; then
             exit $?
         fi
-        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test1.c -o $ROOT_DIR/test/test1.out
+        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test -DDEBUG kcc.o test/test1.c -o $ROOT_DIR/test/test1.out
         ./test/test1.out
         if [ $? -ne 0 ]; then
             echo "fail"
 
         fi
-        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test2.c -o $ROOT_DIR/test/test2.out
+        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test -DDEBUG kcc.o test/test2.c -o $ROOT_DIR/test/test2.out
         ./test/test2.out
         if [ $? -ne 0 ]; then
             echo "fail"
         fi
-        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test kcc.o test/test3.c -o $ROOT_DIR/test/test3.out
+        gcc -g -I$ROOT_DIR -I$ROOT_DIR/test -DDEBUG kcc.o test/test3.c -o $ROOT_DIR/test/test3.out
         ./test/test3.out
         if [ $? -ne 0 ]; then
             echo "fail"
