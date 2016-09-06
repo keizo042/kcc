@@ -27,7 +27,7 @@ case $1 in
 
     ;;
     "cleanup" | "clean")
-        rm $ROOT_DIR/*.o  $TEST_DIR/*.o kcc $TEST_DIR/*.out > /dev/null 2>&1
+        rm $ROOT_DIR/*.o  $TEST_DIR/*.o kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM > /dev/null 2>&1
     ;;
     *)
         echo "gcc -c kcc.c..."
