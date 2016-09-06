@@ -397,3 +397,8 @@ int test_lex_skip_until()
     return CONTINUE;
 }
 
+int test_lex_token_new(lex_token_t *token)
+{
+    return ERR;
+}
+
