@@ -368,3 +368,27 @@ int test_lex_skip_comment(char *src)
     return lex_skip_commnet(state);
 }
 
+int test_lex_skip_until()
+{
+    char *test = "abcdefg hijklmn opqrs tuvw xyz ";
+    lex_state *state = lex_state_open(test);
+
+    if(lex_skip_until(state,'a') != CONTINUE)
+    {
+        return ERR;
+
+    }
+
+    if(lex_skip_until(state, ' ') != CONTINUE)
+    {
+        return ERR;
+    }
+
+    if(lex_skip_until(state, 'z') != CONTINUE)
+    {
+        return ERR;
+    }
+
+    return CONTINUE;
+}
+

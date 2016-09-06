@@ -3,5 +3,8 @@
 int
 main(int argc, char* argv[]) {
     
-    return 0;
+    if(test_lex_skip_until() == ERR)
+    {
+        ERROR("test_lex_skip_until", "test", "error");
+    }
 }
