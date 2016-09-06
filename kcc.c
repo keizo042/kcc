@@ -212,6 +212,11 @@ static int lex_skip_until(lex_state *state, char c)
     lex_token_t *token = state->data->token;
     while(1)
     {
+        if(state->src[token->pos] == '\0')
+        {
+            return ERR;
+        }
+                 
         if(state->src[token->pos] == c)
         {
             return CONTINUE;
