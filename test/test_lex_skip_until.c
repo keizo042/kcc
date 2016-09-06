@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include "test.h"
+#include "kcc.h"
 
 int
 main(int argc, char* argv[]) {
