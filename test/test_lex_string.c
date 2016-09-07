@@ -10,17 +10,15 @@ main(int argc, char* argv[]) {
     char *test2 = "\"\"";
     char *test3 = "\"123456\"";
 
-    if(test_lex_string(test1) != 0)
+    if(test_lex_string(test1) != CONTINUE)
     {
         ERROR("test_lex_string", "test1", "fail");
-        printf("fail");
     }
-    if(test_lex_string(test2) != 0)
+    if(test_lex_string(test2) != CONTINUE)
     {
         ERROR("test_lex_string", "test2", "fail");
-        printf("fail");
     }
-    if(test_lex_string(test3) == 0)
+    if(test_lex_string(test3) != CONTINUE)
     {
         ERROR("test_lex_string", "test3", "fail");
     }
