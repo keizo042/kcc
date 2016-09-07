@@ -7,6 +7,14 @@
 #define DONE 0
 #define CONTINUE 1
 
+#define TEST(func,file,var,err)                     \
+    do{                                             \
+        if((func))                                    \
+        {                                           \
+            ERROR((file),(var),(err));       \
+        }                                           \
+    }while(0);
+
 #define LEX_TOKEN_UNDEFINED 0
 #define LEX_TOKEN_BRACE_L 1
 #define LEX_TOKEN_BRACE_R 2
