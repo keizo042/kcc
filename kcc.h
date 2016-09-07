@@ -82,6 +82,7 @@ int lex_test_digit(char *);
 int lex_test_string(char *);
 int test_lex_skip_comment(char *);
 int test_lex_skip_until(char *,char);
+int test_lex_skip_brank(char *);
 int test_lex_token_new(lex_token_t *);
 int test_lex_token(char *);
 

@@ -26,7 +26,8 @@ case $1 in
         $TEST_DIR/test_lex_skip_until.out
         gcc -g -I$ROOT_DIR -I$TEST_DIR   kcc.o $TEST_DIR/test_lex_token.c -o $TEST_DIR/test_lex_token.out
         $TEST_DIR/test_lex_token.out
-
+        gcc -g -I$ROOT_DIR -I$TEST_DIR   kcc.o $TEST_DIR/test_lex_skip_brank.c -o $TEST_DIR/test_lex_skip_brank.out
+        $TEST_DIR/test_lex_skip_brank.out
     ;;
     "cleanup" | "clean")
         rm $ROOT_DIR/*.o  $TEST_DIR/*.o kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM > /dev/null 2>&1

@@ -404,6 +404,11 @@ int test_lex_skip_until(char *src, char c)
     return  lex_skip_until(state,c);
 }
 
+int test_lex_skip_brank(char *src)
+{
+    lex_state *state = lex_state_open(src);
+    return lex_skip_brank(state);
+}
 int test_lex_token_new(lex_token_t *token)
 {
     return ERR;
