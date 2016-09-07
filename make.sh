@@ -24,6 +24,8 @@ case $1 in
         $TEST_DIR/test_lex_skip_comment.out
         gcc -g -I$ROOT_DIR -I$TEST_DIR   kcc.o $TEST_DIR/test_lex_skip_until.c -o $TEST_DIR/test_lex_skip_until.out
         $TEST_DIR/test_lex_skip_until.out
+        gcc -g -I$ROOT_DIR -I$TEST_DIR   kcc.o $TEST_DIR/test_lex_token.c -o $TEST_DIR/test_lex_token.out
+        $TEST_DIR/test_lex_token.out
 
     ;;
     "cleanup" | "clean")

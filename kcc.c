@@ -384,6 +384,13 @@ int test_lex_string(char *src)
     return lex_string(state);
 }
 
+
+int test_lex_token(char *src)
+{
+    lex_state *state = lex_state_open(src);
+    return lex_token(state);
+}
+
 int test_lex_skip_comment(char *src)
 {
     lex_state *state = lex_state_open(src);
