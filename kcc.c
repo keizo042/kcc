@@ -121,6 +121,7 @@ static int lex_digit(lex_state *state)
         {
             break;
         }
+        goto fail;
 
     }
 
@@ -142,6 +143,7 @@ static int lex_digit(lex_state *state)
             {
                 break;
             }
+            goto fail;
         }
     }
 
