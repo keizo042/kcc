@@ -29,6 +29,12 @@
 #define LEX_TOKEN_CORON 11
 #define LEX_TOKEN_EOL 12
 #define LEX_TOKEN_STR 13
+#define LEX_TOKEN_PLUS 14
+#define LEX_TOKEN_MINUS 15
+#define LEX_TOKEN_MULTI 16
+#define LEX_TOKEN_DIV 17
+#define LEX_TOKEN_PTR 18
+#define LEX_TOKEN_END 19
 
 
 #define ISDIGIT(chr) ( '0' <= chr && chr <= '9')

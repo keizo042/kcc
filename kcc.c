@@ -5,6 +5,15 @@
 #include "kcc.h"
 
 
+static int lex_emit(lex_state *, uint64_t);
+static int lex_digit(lex_state *);
+static int lex_string(lex_state *);
+static int lex_skip_brank(lex_state *);
+static int lex_skip_until(lex_state *, char);
+static int lex_skip_comment(lex_state *);
+static int lex_ident(lex_state *);
+static int lex_text(lex_state *);
+
 static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
         lex_token_t *token = (lex_token_t*)malloc( sizeof(lex_token_t) );
@@ -278,6 +287,43 @@ static int lex_pragma(lex_state *state)
     return ERR;
 }
 
+static int lex_ident(lex_state *state)
+{
+    lex_token_t *token = state->data->token;
+    while(1)
+    {
+        if(strncmp(state->src + token->pos, "int",strlen("int")))
+        {
+            token->len += strlen("int");
+            goto accept;
+        }
+        if(strncmp(state->src + token->pos, "double",strlen("double")))
+        {
+            token->pos += strlen("double");
+            goto accept;
+        }
+        if(strncmp(state->src + token->pos, "char", strlen("char")))
+        {
+            token->pos += strlen("char");
+            goto accept;
+        }
+        token->pos++;
+    }
+
+    return ERR;
+
+accept:
+    lex_emit(state,LEX_TOKEN_TYPE);
+    goto accept;
+    lex_skip_brank(state);
+    if(state->src[token->pos] == '*')
+    {
+        lex_emit(state, LEX_TOKEN_PTR);
+    }
+    lex_skip_brank(state);
+    return lex_token(state);
+}
+
 static int lex_text(lex_state *state)
 {
     char *src = state->src;
@@ -297,6 +343,9 @@ static int lex_text(lex_state *state)
                 token->line++;
                 token->pos++;
                 continue;
+            case ';':
+                token->len++;
+                return lex_emit(state, LEX_TOKEN_END);
             case '/':
                 switch(src[token->pos + 1])
                 {
@@ -314,14 +363,7 @@ static int lex_text(lex_state *state)
             case '"':
                 return lex_string(state);
             default:
-                if(strncmp(src + token->pos, "int", strlen("int")) == 0)
-                {
-                    token->pos += strlen("int");
-                    lex_emit(state, LEX_TOKEN_TYPE);
-                    lex_skip_brank(state);
-                    return lex_token(state);
-                }
-
+                lex_ident(state);
 
         }
     }
@@ -336,10 +378,15 @@ lex_state *lex(char *src)
     lex_state *state = lex_state_open(src);
     while(0)
     {
-        c = lex_text(state);
-        if(c != DONE)
+        switch(c = lex_text(state))
         {
-            break;
+            case ERR:
+                break;
+            case DONE:
+                break;
+            case CONTINUE:
+                continue;
+
         }
     }
 
