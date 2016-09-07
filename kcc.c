@@ -8,11 +8,13 @@
 static int lex_emit(lex_state *, uint64_t);
 static int lex_digit(lex_state *);
 static int lex_string(lex_state *);
+static int lex_argument(lex_state *);
 static int lex_skip_brank(lex_state *);
 static int lex_skip_until(lex_state *, char);
 static int lex_skip_comment(lex_state *);
 static int lex_ident(lex_state *);
 static int lex_text(lex_state *);
+
 
 static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
@@ -287,6 +289,11 @@ static int lex_pragma(lex_state *state)
     return ERR;
 }
 
+static int lex_argument(lex_state *state)
+{
+    return ERR;
+}
+
 static int lex_ident(lex_state *state)
 {
     lex_token_t *token = state->data->token;
@@ -307,21 +314,52 @@ static int lex_ident(lex_state *state)
             token->pos += strlen("char");
             goto accept;
         }
-        token->pos++;
+        switch(state->src[token->pos])
+        {
+            case ' ':
+                continue;
+            case '\n':
+                return ERR;
+            case '\0':
+                return ERR;
+            default:
+                return ERR;
+        }
     }
 
     return ERR;
 
 accept:
     lex_emit(state,LEX_TOKEN_TYPE);
-    goto accept;
+    token = state->data->token;
     lex_skip_brank(state);
     if(state->src[token->pos] == '*')
     {
         lex_emit(state, LEX_TOKEN_PTR);
+        token = state->data->token;
     }
     lex_skip_brank(state);
-    return lex_token(state);
+    if( lex_token(state) != CONTINUE)
+    {
+       return ERR;
+    }
+    lex_skip_brank(state);
+    switch(state->src[token->pos])
+    {
+        case '(':
+            token->len++;
+            lex_emit(state,LEX_TOKEN_PAREN_L);
+            return lex_argument(state);
+        case ';':
+            token->len++;
+            lex_emit(state, LEX_TOKEN_END);
+            return CONTINUE;
+        case '=':
+            token->len++;
+            lex_emit(state, LEX_TOKEN_EQ);
+        default:
+            return ERR;
+    }
 }
 
 static int lex_text(lex_state *state)
