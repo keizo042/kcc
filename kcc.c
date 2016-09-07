@@ -214,6 +214,11 @@ static int lex_skip_until(lex_state *state, char c)
     lex_token_t *token = state->data->token;
     while(1)
     {
+        if(state->src[token->pos] == '\0')
+        {
+            return ERR;
+        }
+                 
         if(state->src[token->pos] == c)
         {
             return CONTINUE;
@@ -368,5 +373,34 @@ int test_lex_skip_comment(char *src)
 {
     lex_state *state = lex_state_open(src);
     return lex_skip_commnet(state);
+}
+
+int test_lex_skip_until()
+{
+    char *test = "abcdefg hijklmn opqrs tuvw xyz ";
+    lex_state *state = lex_state_open(test);
+
+    if(lex_skip_until(state,'a') != CONTINUE)
+    {
+        return ERR;
+
+    }
+
+    if(lex_skip_until(state, ' ') != CONTINUE)
+    {
+        return ERR;
+    }
+
+    if(lex_skip_until(state, 'z') != CONTINUE)
+    {
+        return ERR;
+    }
+
+    return CONTINUE;
+}
+
+int test_lex_token_new(lex_token_t *token)
+{
+    return ERR;
 }
 

@@ -14,7 +14,7 @@ main(int argc, char* argv[]) {
 
 
     char *test2 = "0000";
-    if(test_lex_digit(test2) == CONTINUE)
+    if(test_lex_digit(test2) != CONTINUE)
     {
         ERROR("test_lex_digit", "test2", "fail");
     }
