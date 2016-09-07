@@ -184,27 +184,37 @@ accept:
 static int lex_skip_commnet(lex_state *state)
 {
     lex_token_t *token = state->data->token;
+    if(state->src[token->pos] != '/')
+    {
+        return ERR;
+    }
+    if(state->src[token->pos + 1] != '*')
+    {
+        return ERR;
+    }
+    token->pos += 2;
     while(1)
     {
+
         switch(state->src[token->pos])
         {
             case '\n':
                 token->line++;
                 token->pos++;
+                continue;
+            case '\0':
+                return ERR;
             case '*':
-                token->pos++;
-                switch(state->src[token->pos])
+                if(state->src[token->pos + 1] == '/')
                 {
-                    case '/':
-                        token->pos++;
-                        return CONTINUE;
-                    default:
-                        token->pos++;
+                    token->pos += 2;
+                    return CONTINUE;
                 }
             default:
-                continue;
+                token->pos++;
         }
     }
+    return ERR;
 }
 
 static int lex_skip_brank(lex_state *state)
@@ -265,7 +275,7 @@ static int lex_pragma(lex_state *state)
     if( n == 0)
     {
     }
-    return CONTINUE;
+    return ERR;
 }
 
 static int lex_text(lex_state *state)
@@ -288,13 +298,11 @@ static int lex_text(lex_state *state)
                 token->pos++;
                 continue;
             case '/':
-                switch(src[token->pos])
+                switch(src[token->pos + 1])
                 {
                     case '*':
-                        token->pos++;
                         return lex_skip_commnet(state);
                     case '/':
-                        token->pos++;
                         return lex_skip_until(state, '\n');
                     default:
                         return ERR;
