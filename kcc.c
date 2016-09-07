@@ -22,6 +22,7 @@ static lex_state* lex_state_open(char *src)
     state->head = NULL;
     state->tail = NULL;
     state->data = (lex_tokens_t*)malloc( sizeof(lex_tokens_t));
+    state->data->next = NULL;
     state->data->token = lex_token_new(0, 0, 0, NULL, LEX_TOKEN_UNDEFINED);
     state->src = src;
     return state;
@@ -29,15 +30,18 @@ static lex_state* lex_state_open(char *src)
 
 static int lex_emit(lex_state *state, uint64_t typ)
 {
-    lex_tokens_t *new_tokens = (lex_tokens_t*)malloc( sizeof(lex_tokens_t) );
     lex_token_t *old = state->data->token;
-
-    old->typ = typ;
-
+    lex_tokens_t *new_tokens = (lex_tokens_t*)malloc( sizeof( lex_tokens_t) );
     old->sym  = (char *)malloc( sizeof(char) * ( old->len + 1));
-    strncpy(old->sym, state->src + old->pos, old->len);
+    if(old->len != 0)
+    {
+        strncpy(old->sym, state->src + old->pos, old->len);
+    }else
+    {
+        old->sym[0] = '\0';
+    }
 
-    new_tokens->token = lex_token_new(old->pos + old->len, 0, old->line, NULL , typ);
+    new_tokens->token = lex_token_new(old->pos + old->len, 0, old->line, NULL ,LEX_TOKEN_UNDEFINED );
 
     state->data->next = new_tokens;
     state->data = new_tokens;
@@ -89,9 +93,12 @@ static int lex_string(lex_state *state)
     token->pos++;
     while(1)
     {
-        if(state->src[token->pos + token->len] != '"')
+        if(state->src[token->pos + token->len] == '"')
         {
+            if(token->len > 0)
+            {
             token->len--;
+            }
             lex_emit(state, LEX_TOKEN_STR);
             return CONTINUE;
 
