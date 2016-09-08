@@ -16,6 +16,44 @@ static int lex_ident(lex_state *);
 static int lex_text(lex_state *);
 
 
+reserved_t resword[] = {
+        { .sym = "if", .typ = LEX_TOKEN_IF},
+        { .sym = "while", .typ = LEX_TOKEN_WHILE },
+        { .sym = "sizeof", .typ = LEX_TOKEN_SIZEOF },
+        { .sym = "return", .typ = LEX_TOKEN_RETURN },
+        { .sym = "goto", .typ = LEX_TOKEN_GOTO},
+        { .sym = "switch", .typ = LEX_TOKEN_SWITCH},
+        { .sym = "continue", .typ = LEX_TOKEN_CONTINUE},
+        { .sym = "else", .typ = LEX_TOKEN_ELSE},
+        { .sym = "for", .typ = LEX_TOKEN_FOR},
+        { .sym = "typefef", .typ = LEX_TOKEN_TYPEDEF},
+        { .sym = "struct", .typ = LEX_TOKEN_STRUCT},
+        {}
+};
+
+const char *type[] = {
+        "int",
+        "char",
+        "long",
+        "short",
+        "float",
+        "void",
+        "double",
+        ""
+};
+
+const char *specifier[] = {
+        "signed",
+        "unsigned",
+        "volatile",
+        "extern",
+        "static",
+        "register",
+        "union",
+        ""
+
+};
+
 static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
         lex_token_t *token = (lex_token_t*)malloc( sizeof(lex_token_t) );
@@ -294,6 +332,17 @@ static int lex_argument(lex_state *state)
     return ERR;
 }
 
+static int lex_specifier(lex_state *state)
+{
+    lex_token_t *token = state->data->token;
+    return ERR;
+}
+
+static int lex_type(lex_state *state)
+{
+    lex_token_t *token = state->data->token;
+    return ERR;
+}
 static int lex_ident(lex_state *state)
 {
     lex_token_t *token = state->data->token;
@@ -401,7 +450,7 @@ static int lex_text(lex_state *state)
             case '"':
                 return lex_string(state);
             default:
-                lex_ident(state);
+                return lex_ident(state);
 
         }
     }
@@ -494,8 +543,16 @@ int test_lex_skip_brank(char *src)
     lex_state *state = lex_state_open(src);
     return lex_skip_brank(state);
 }
+
 int test_lex_token_new(lex_token_t *token)
 {
-    return ERR;
+     token = lex_token_new(0, 0, 0, "", LEX_TOKEN_UNDEFINED);
+     return CONTINUE;
 }
 
+
+int test_lex_token_ident(char *src)
+{
+    lex_state *state = lex_state_open(src);
+    return lex_ident(state);
+}

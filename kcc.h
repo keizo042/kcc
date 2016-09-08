@@ -39,9 +39,29 @@
 #define LEX_TOKEN_PAREN_R 21
 #define LEX_TOKEN_EQ 22
 
+#define LEX_TOKEN_IF 23
+#define LEX_TOKEN_WHILE 24
+#define LEX_TOKEN_SIZEOF 27
+#define LEX_TOKEN_GOTO 28
+#define LEX_TOKEN_SWITCH 29
+#define LEX_TOKEN_CONTINUE 30
+#define LEX_TOKEN_ELSE 31
+#define LEX_TOKEN_FOR 32
+#define LEX_TOKEN_TYPEDEF 33
+#define LEX_TOKEN_STRUCT 34
+
 
 #define ISDIGIT(chr) ( '0' <= chr && chr <= '9')
 #define ISASCII(chr) (('a' <= chr && chr <= 'z') || ('A' <= chr && 'Z'))
+
+typedef struct reserved_s {
+        char *sym;
+        uint64_t typ;
+}reserved_t;
+
+extern reserved_t resword[];
+extern const char *type[];
+extern const char *specifier[];
 
 struct lex_token_s;
 typedef struct lex_token_s lex_token_t;
