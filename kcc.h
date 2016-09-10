@@ -54,14 +54,6 @@
 #define ISDIGIT(chr) ( '0' <= chr && chr <= '9')
 #define ISASCII(chr) (('a' <= chr && chr <= 'z') || ('A' <= chr && 'Z'))
 
-typedef struct reserved_s {
-        char *sym;
-        uint64_t typ;
-}reserved_t;
-
-extern reserved_t resword[];
-extern const char *type[];
-extern const char *specifier[];
 
 struct lex_token_s;
 typedef struct lex_token_s lex_token_t;
