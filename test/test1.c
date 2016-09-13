@@ -7,13 +7,13 @@ char *test1_code_function = "int func() {return 0; }";
 
 static lex_token_t test1_expect_tokens[] = {
     { .pos = 0,     .len = 3,   .line = 0,  .sym = "int",       .typ = LEX_TOKEN_TYPE      },
-    { .pos = 5,     .len = 4,   .line = 0,  .sym = "func",      .typ = LEX_TOKEN_ID        },
+    { .pos = 5,     .len = 4,   .line = 0,  .sym = "func",      .typ = LEX_TOKEN_TOKEN        },
     { .pos = 10,    .len = 1,   .line = 0,  .sym = "(",         .typ = LEX_TOKEN_BRACKET_L },
     { .pos = 11,    .len = 1,   .line = 0,  .sym = ")",         .typ = LEX_TOKEN_BRACKET_R },
     { .pos = 13,    .len = 1,   .line = 0,  .sym = "{",         .typ = LEX_TOKEN_BRACE_L   },
     { .pos = 14,    .len = 6,   .line = 0,  .sym = "return",    .typ = LEX_TOKEN_RETURN    },
     { .pos = 21,    .len = 1,   .line = 0,  .sym = "0",         .typ = LEX_TOKEN_DIGIT     },
-    { .pos = 22,    .len = 1,   .line = 0,  .sym = ";",         .typ = LEX_TOKEN_SEMICORON },
+    { .pos = 22,    .len = 1,   .line = 0,  .sym = ";",         .typ = LEX_TOKEN_END },
     { .pos = 24,    .len = 1,   .line = 0,  .sym = "}",         .typ = LEX_TOKEN_BRACE_R   },
     { .pos = 25,     .len = 0,   .line = 0,  .sym = "",          .typ = LEX_TOKEN_EOL       },
     {}

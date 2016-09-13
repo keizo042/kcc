@@ -20,21 +20,18 @@
 #define LEX_TOKEN_BRACE_R 2
 #define LEX_TOKEN_BRACKET_L 3
 #define LEX_TOKEN_BRACKET_R 4
-#define LEX_TOKEN_SEMICORON 5
-#define LEX_TOKEN_RETURN 6
+#define LEX_TOKEN_END 5
+#define LEX_TOKEN_COMMA 6
 #define LEX_TOKEN_DIGIT 7
 #define LEX_TOKEN_TYPE 8
-#define LEX_TOKEN_ID 9
+#define LEX_TOKEN_STR 9
 #define LEX_TOKEN_TOKEN 10
 #define LEX_TOKEN_CORON 11
 #define LEX_TOKEN_EOL 12
-#define LEX_TOKEN_STR 13
 #define LEX_TOKEN_PLUS 14
+#define LEX_TOKEN_ASTARISK 14
 #define LEX_TOKEN_MINUS 15
-#define LEX_TOKEN_MULTI 16
 #define LEX_TOKEN_DIV 17
-#define LEX_TOKEN_PTR 18
-#define LEX_TOKEN_END 19
 #define LEX_TOKEN_PAREN_L 20
 #define LEX_TOKEN_PAREN_R 21
 #define LEX_TOKEN_EQ 22
@@ -49,6 +46,7 @@
 #define LEX_TOKEN_FOR 32
 #define LEX_TOKEN_TYPEDEF 33
 #define LEX_TOKEN_STRUCT 34
+#define LEX_TOKEN_RETURN 35
 
 
 #define ISDIGIT(chr) ( '0' <= chr && chr <= '9')
