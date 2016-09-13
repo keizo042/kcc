@@ -336,21 +336,31 @@ static int lex_ident(lex_state *state)
 {
     lex_token_t *token = state->data->token;
     int i = 0;
-head:
+
     for(i =0; keywords[i].sym != NULL; i++)
     {
         if(lex_cmp(state,keywords[i].sym))
         {
             token->len += strlen(keywords[i].sym);
+            if(ISASCII(state->src[token->pos + token->len + 1]))
+            {
+                goto ident;
+            }
             return lex_emit(state, keywords[i].typ);
+
         }
         
     }
+
     for(i = 0; specifiers[i].sym != NULL; i++)
     {
         if(lex_cmp(state, specifiers[i].sym))
         {
             token->len += strlen(specifiers[i].sym);
+            if(ISASCII(state->src[token->pos + token->len + 1]))
+            {
+                goto ident;
+            }
             return lex_emit(state, specifiers[i].typ);
         }
     }
@@ -359,14 +369,19 @@ head:
     {
         if(lex_cmp(state, typs[i]))
         {
-        token->len += strlen(typs[i]);
-        return lex_emit(state, LEX_TOKEN_TYPE);
+            token->len += strlen(typs[i]);
+            if(ISASCII(state->src[token->pos + token->len + 1]))
+            {
+                goto ident;
+            }
+            return lex_emit(state, LEX_TOKEN_TYPE);
         }
     }
 
+ident:
     while(1)
     {
-        if( !ISASCII(state->src[token->pos + token->len ] ))
+        if(!ISIDENT(state->src[token->pos + token->len]))
         {
             token->len--;
             return lex_emit(state, LEX_TOKEN_TOKEN);
@@ -374,7 +389,6 @@ head:
         }
         token->len++;
     }
-
 
 fail:
     return ERR;
