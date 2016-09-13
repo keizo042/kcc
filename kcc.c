@@ -4,6 +4,8 @@
 #include <string.h>
 #include "kcc.h"
 
+#define lex_cmp(state,x) (strncmp(state->src + state->data->token->pos, (x), strlen((x))) == 0)
+
 
 static int lex_emit(lex_state *, uint64_t);
 static int lex_digit(lex_state *);
@@ -15,6 +17,44 @@ static int lex_ident(lex_state *);
 static int lex_text(lex_state *);
 
 
+static keyword_t keywords[] = {
+        { .sym = "if", .typ = LEX_TOKEN_IF},
+        { .sym = "while", .typ = LEX_TOKEN_WHILE },
+        { .sym = "sizeof", .typ = LEX_TOKEN_SIZEOF },
+        { .sym = "return", .typ = LEX_TOKEN_RETURN },
+        { .sym = "goto", .typ = LEX_TOKEN_GOTO},
+        { .sym = "switch", .typ = LEX_TOKEN_SWITCH},
+        { .sym = "continue", .typ = LEX_TOKEN_CONTINUE},
+        { .sym = "else", .typ = LEX_TOKEN_ELSE},
+        { .sym = "for", .typ = LEX_TOKEN_FOR},
+        { .sym = "typefef", .typ = LEX_TOKEN_TYPEDEF},
+        { .sym = "struct", .typ = LEX_TOKEN_STRUCT},
+        {}
+};
+
+static  char *typs[] = {
+        "int",
+        "char",
+        "long",
+        "short",
+        "float",
+        "void",
+        "double",
+        NULL
+};
+
+
+static specifier_t specifiers[] = {
+        {"signed", LEX_TOKEN_SIGNED},
+        {"unsigned", LEX_TOKEN_UNDEFINED},
+        {"volatile", LEX_TOKEN_VOLATILE },
+        {"extern", LEX_TOKEN_EXTERN },
+        {"static", LEX_TOKEN_STATIC },
+        {"register", LEX_TOKEN_REGISTER },
+        {"union", LEX_TOKEN_UNION },
+        {}
+
+};
 
 static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char *sym, uint64_t typ)
 {
@@ -290,54 +330,42 @@ static int lex_pragma(lex_state *state)
 }
 
 
-static int lex_specifier(lex_state *state)
-{
-    lex_token_t *token = state->data->token;
-    return ERR;
-}
 
-static int lex_type(lex_state *state)
-{
-    lex_token_t *token = state->data->token;
-    return ERR;
-}
+
 static int lex_ident(lex_state *state)
 {
     lex_token_t *token = state->data->token;
+    int i = 0;
+head:
     while(1)
     {
-        if(strncmp(state->src + token->pos, "int",strlen("int")))
+        for(i =0; keywords[i].sym != NULL; i++)
         {
-            token->len += strlen("int");
-            goto accept;
+            
         }
-        if(strncmp(state->src + token->pos, "double",strlen("double")))
+        for(i = 0; specifiers[i].sym != NULL; i++)
         {
-            token->pos += strlen("double");
-            goto accept;
         }
-        if(strncmp(state->src + token->pos, "char", strlen("char")))
+        for(i =0; typs[i] != NULL; i++)
         {
-            token->pos += strlen("char");
-            goto accept;
         }
-        switch(state->src[token->pos])
-        {
-            case ' ':
-                continue;
-            case '\n':
-                return ERR;
-            case '\0':
-                return ERR;
-            default:
-                return ERR;
-        }
+
     }
 
+
+type:
+    if(state->src[token->pos + token->len + 1] == ' ')
+    {
+        return  lex_emit(state, LEX_TOKEN_TYPE);
+    }
+    if(ISASCII(state->src[token->pos + token->len + 1]))
+    {
+        goto head;
+    }
+
+fail:
     return ERR;
 
-accept:
-    return lex_emit(state,LEX_TOKEN_TYPE);
 }
 
 static int lex_text(lex_state *state)
@@ -374,6 +402,9 @@ static int lex_text(lex_state *state)
             case '}':
                 token->len++;
                 return lex_emit(state, LEX_TOKEN_BRACKET_R);
+            case '=':
+                token->len++;
+                return lex_emit(state, LEX_TOKEN_EQ);
             case '+':
                 token->len++;
                 return  lex_emit(state, LEX_TOKEN_PLUS);

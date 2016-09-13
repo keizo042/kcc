@@ -47,6 +47,12 @@
 #define LEX_TOKEN_TYPEDEF 33
 #define LEX_TOKEN_STRUCT 34
 #define LEX_TOKEN_RETURN 35
+#define LEX_TOKEN_SIGNED 36
+#define LEX_TOKEN_VOLATILE 37
+#define LEX_TOKEN_STATIC 38
+#define LEX_TOKEN_UNION 40
+#define LEX_TOKEN_EXTERN 41
+#define LEX_TOKEN_REGISTER 42
 
 
 #define ISDIGIT(chr) ( '0' <= chr && chr <= '9')
@@ -91,6 +97,17 @@ struct parser_state_s;
 typedef struct parser_state_s parser_state;
 
 
+
+typedef struct reseve_s {
+        char *sym;
+        uint64_t typ;
+}reserve_t;
+
+typedef reserve_t keyword_t;
+typedef reserve_t specifier_t;
+
+
+
 void compile(const char *);
 lex_state* lex(char *);
 parser_state* parse(lex_state *lex);
@@ -104,5 +121,6 @@ int test_lex_skip_until(char *,char);
 int test_lex_skip_brank(char *);
 int test_lex_token_new(lex_token_t *);
 int test_lex_token(char *);
+
 
 #endif // _KCC_H
