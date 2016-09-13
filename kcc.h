@@ -57,6 +57,7 @@
 
 #define ISDIGIT(chr) ( '0' <= chr && chr <= '9')
 #define ISASCII(chr) (('a' <= chr && chr <= 'z') || ('A' <= chr && 'Z'))
+#define ISIDENT(chr) (ISDIGIT(chr)  || ISASCII(chr))
 
 
 struct lex_token_s;
