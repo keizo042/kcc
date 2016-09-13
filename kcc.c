@@ -337,31 +337,44 @@ static int lex_ident(lex_state *state)
     lex_token_t *token = state->data->token;
     int i = 0;
 head:
+    for(i =0; keywords[i].sym != NULL; i++)
+    {
+        if(lex_cmp(state,keywords[i].sym))
+        {
+            token->len += strlen(keywords[i].sym);
+            return lex_emit(state, keywords[i].typ);
+        }
+        
+    }
+    for(i = 0; specifiers[i].sym != NULL; i++)
+    {
+        if(lex_cmp(state, specifiers[i].sym))
+        {
+            token->len += strlen(specifiers[i].sym);
+            return lex_emit(state, specifiers[i].typ);
+        }
+    }
+
+    for(i =0; typs[i] != NULL; i++)
+    {
+        if(lex_cmp(state, typs[i]))
+        {
+        token->len += strlen(typs[i]);
+        return lex_emit(state, LEX_TOKEN_TYPE);
+        }
+    }
+
     while(1)
     {
-        for(i =0; keywords[i].sym != NULL; i++)
+        if( !ISASCII(state->src[token->pos + token->len ] ))
         {
-            
-        }
-        for(i = 0; specifiers[i].sym != NULL; i++)
-        {
-        }
-        for(i =0; typs[i] != NULL; i++)
-        {
-        }
+            token->len--;
+            return lex_emit(state, LEX_TOKEN_TOKEN);
 
+        }
+        token->len++;
     }
 
-
-type:
-    if(state->src[token->pos + token->len + 1] == ' ')
-    {
-        return  lex_emit(state, LEX_TOKEN_TYPE);
-    }
-    if(ISASCII(state->src[token->pos + token->len + 1]))
-    {
-        goto head;
-    }
 
 fail:
     return ERR;
