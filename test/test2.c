@@ -40,28 +40,28 @@ static int lex_test2_comments(lex_tokens_t *tokens) {
 }
 
 int main() {
-  lex_state *l2comment = NULL, *l2comments = NULL;
+  lex_state *test1 = NULL, *test2 = NULL;
   int flag = 0;
 
-  l2comment = lex(test2_code_comment);
-  if (l2comment == NULL) {
+  test1 = lex(test2_code_comment);
+  if (test1 == NULL) {
     flag = 1;
     ERROR("test2", "test2_code_comment", "fail to lex");
     goto test2_end;
   }
 
-  if (lex_test2_comment(l2comment->head)) {
+  if (lex_test2_comment(test1->head)) {
     flag = 1;
     goto test2_end;
   }
 
-  l2comments = lex(test2_code_comments);
-  if (l2comments == NULL) {
+  test2 = lex(test2_code_comments);
+  if (test2 == NULL) {
     ERROR("test2", "test2_code_comments", "fail to lex");
     goto test2_end;
   }
 
-  if (lex_test2_comments(l2comments->head) != 0) {
+  if (lex_test2_comments(test2->head) != 0) {
     goto test2_end;
   }
 
