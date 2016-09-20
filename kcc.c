@@ -8,7 +8,6 @@
 static int lex_emit(lex_state *, uint64_t);
 static int lex_digit(lex_state *);
 static int lex_string(lex_state *);
-static int lex_argument(lex_state *);
 static int lex_skip_brank(lex_state *);
 static int lex_skip_until(lex_state *, char);
 static int lex_skip_comment(lex_state *);
@@ -24,8 +23,6 @@ static lex_token_t* lex_token_new(uint64_t pos,uint64_t len, uint64_t line, char
         token->len  = len;
         token->line = line;
         token->sym  = sym;
-        token->typ  = typ;
-        return token;
 }
 
 static lex_state* lex_state_open(char *src)
@@ -290,22 +287,10 @@ static int lex_pragma(lex_state *state)
     return ERR;
 }
 
-static int lex_argument(lex_state *state)
-{
-    return ERR;
+acc1:
+    return CONTINUE;
 }
 
-static int lex_specifier(lex_state *state)
-{
-    lex_token_t *token = state->data->token;
-    return ERR;
-}
-
-static int lex_type(lex_state *state)
-{
-    lex_token_t *token = state->data->token;
-    return ERR;
-}
 static int lex_ident(lex_state *state)
 {
     lex_token_t *token = state->data->token;
