@@ -259,33 +259,38 @@ static int lex_pragma(lex_state *state)
     int n = strncmp(state->src + state->data->token->pos, "define", strlen("define"));
     if(n == 0)
     {
+        state->data->token->pos += strlen("define");
     }
     
     n = strncmp(state->src + state->data->token->pos, "include", strlen("include"));
     if(n == 0)
     {
+        state->data->token->pos += strlen("include");
     }
     n = strncmp(state->src + state->data->token->pos, "pragma", strlen("pragma"));
     if(n == 0)
     {
+        state->data->token->pos += strlen("pragma");
     }
 
     n = strncmp(state->src + state->data->token->pos, "if", strlen("if"));
     if( n == 0)
     {
+        state->data->token->pos += strlen("if");
     }
 
     n = strncmp(state->src + state->data->token->pos, "ifndef", strlen("ifndef"));
     if( n == 0 )
     {
+        state->data->token->pos += strlen("ifndef");
     }
 
     n = strncmp(state->src + state->data->token->pos, "endif", strlen("endif"));
     if( n == 0)
     {
+        state->data->token->pos += strlen("endif");
     }
     return ERR;
-}
 
 acc1:
     return CONTINUE;
