@@ -69,8 +69,7 @@ static int lex_token(lex_state *state) {
     if (ISASCII(state->src[token->pos + token->len]) ||
         ISDIGIT(state->src[token->len])) {
       token->len++;
-    }else
-    {
+    } else {
       token->len--;
       lex_emit(state, LEX_TOKEN_TOKEN);
       break;
