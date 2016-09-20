@@ -351,7 +351,7 @@ accept:
         case '(':
             token->len++;
             lex_emit(state,LEX_TOKEN_PAREN_L);
-            return lex_argument(state);
+            return CONTINUE;
         case ';':
             token->len++;
             lex_emit(state, LEX_TOKEN_END);
