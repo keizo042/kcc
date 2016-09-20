@@ -2,7 +2,7 @@
 
 static int lex_test1(lex_tokens_t *l);
 
-char *test1_code_function = "int func() {return 0; }";
+char *test1 = "int func() {return 0; }";
 
 static lex_token_t test1_expect_tokens[] = {
     {.pos = 0, .len = 3, .line = 0, .sym = "int", .typ = LEX_TOKEN_TYPE},
@@ -53,23 +53,8 @@ int main() {
   int flag = 0;
   lex_state *l;
 
-  l = lex(test1_code_function);
-  if (l == NULL) {
-    flag = 1;
-    ERROR("test1", "ptr check", "null");
-    goto test1_end;
-  } else
+  l = lex(test1);
+  TEST(l == NULL, "test1", "ptr check", "null");
+  TEST(lex_test1(l->head), "test1", "lex_test1", "fail");
 
-      if (lex_test1(l->head)) {
-    flag = 1;
-    ERROR("test1", "lex_test1", "fail");
-    goto test1_end;
-  } else
-  test1_end:
-
-  if (flag == 0) {
-    return 0;
-  } else {
-    return -1;
-  }
 }
