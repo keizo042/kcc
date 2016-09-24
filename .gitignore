@@ -4,4 +4,4 @@
 /test/*.o
 /test/*.out
 /test/*.dSYM/
-
+.DS_Store
