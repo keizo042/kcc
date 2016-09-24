@@ -206,10 +206,8 @@ accept:
 
 static int lex_skip_commnet(lex_state *state) {
   lex_token_t *token = state->data->token;
-  if (state->src[token->pos] != '/') {
-    return ERR;
-  }
-  if (state->src[token->pos + 1] != '*') {
+  if (state->src[token->pos] != '/' ||
+          state->src[token->pos + 1] != '*'){
     return ERR;
   }
   token->pos += 2;
@@ -234,6 +232,7 @@ static int lex_skip_commnet(lex_state *state) {
   return ERR;
 }
 
+
 static int lex_skip_brank(lex_state *state) {
   while (state->src[state->data->token->pos] == ' ') {
     state->data->token->pos++;
@@ -251,20 +250,15 @@ static int lex_skip_until(lex_state *state, char c) {
     if (state->src[token->pos] == c) {
       return CONTINUE;
     }
+  }
 
-    n = strncmp(state->src + state->data->token->pos, "ifndef", strlen("ifndef"));
-    if( n == 0 )
-    {
-    }
-
-    n = strncmp(state->src + state->data->token->pos, "endif", strlen("endif"));
-    if( n == 0)
-    {
-    }
     return ERR;
 }
 
 
+static int lex_pragma(lex_state *state) {
+    return ERR;
+}
 
 
 static int lex_ident(lex_state *state)
@@ -330,108 +324,6 @@ fail:
 
 }
 
-static int lex_text(lex_state *state)
-{
-    char *src = state->src;
-    lex_token_t *token = state->data->token;
-    while(1)
-    {
-        switch(src[token->pos])
-        {
-            case '\0':
-                lex_emit(state, LEX_TOKEN_EOL);
-                return DONE;
-            case ' ':
-            case '\t':
-                token->pos++;
-                continue;
-            case '\n':
-                token->line++;
-                token->pos++;
-                continue;
-            case ';':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_END);
-            case '(':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_BRACE_L);
-            case ')':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_BRACE_R);
-            case '{':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_BRACKET_L);
-            case '}':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_BRACKET_R);
-            case '=':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_EQ);
-            case '+':
-                token->len++;
-                return  lex_emit(state, LEX_TOKEN_PLUS);
-            case '-':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_MINUS);
-            case '*':
-                token->len++;
-                return lex_emit(state, LEX_TOKEN_ASTARISK);
-
-            case '/':
-                switch(src[token->pos + 1])
-                {
-                    case '*':
-                        return lex_skip_commnet(state);
-                    case '/':
-                        return lex_skip_until(state, '\n');
-                    default:
-                        token->len++;
-                        return lex_emit(state, LEX_TOKEN_DIV);
-
-                }
-            case '#':
-                token->pos++;
-                return lex_pragma(state);
-            case '"':
-                return lex_string(state);
-            default:
-                return lex_ident(state);
-
-        }
-    }
-  }
-
-  return ERR;
-
-accept:
-  lex_emit(state, LEX_TOKEN_TYPE);
-  token = state->data->token;
-  lex_skip_brank(state);
-  if (state->src[token->pos] == '*') {
-    lex_emit(state, LEX_TOKEN_PTR);
-    token = state->data->token;
-  }
-  lex_skip_brank(state);
-  if (lex_token(state) != CONTINUE) {
-    return ERR;
-  }
-  lex_skip_brank(state);
-  switch (state->src[token->pos]) {
-  case '(':
-    token->len++;
-    lex_emit(state, LEX_TOKEN_PAREN_L);
-    return CONTINUE;
-  case ';':
-    token->len++;
-    lex_emit(state, LEX_TOKEN_END);
-    return CONTINUE;
-  case '=':
-    token->len++;
-    lex_emit(state, LEX_TOKEN_EQ);
-  default:
-    return ERR;
-  }
-}
 
 static int lex_text(lex_state *state) {
   char *src = state->src;
