@@ -1,16 +1,9 @@
+#include "kcc.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "kcc.h"
 #include <string.h>
 
-static char* text[] = {
-    "usage : kcc [file] ",
-    " ",
-    " ",
-    " ",
-    " ",
-    NULL
-};
+static char *text[] = {"usage : kcc [file] ", " ", " ", " ", " ", NULL};
 
 typedef struct field_s {
     char *opt;
@@ -35,11 +28,12 @@ optargs_t* optparse(int argc, char**argv)
     return NULL;
 }
 
-int
-main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 
-    optargs_t* ARGS = optparse(argc, argv);
-
-    
+  if (argc < 2) {
+    usage();
     return 0;
+  }
+
+  return 0;
 }
