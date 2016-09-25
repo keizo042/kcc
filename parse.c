@@ -14,6 +14,6 @@ typedef struct parser_state parser_state;
 
 
 parser_state *parse(lex_state *lexer) {
-    parser_state *parser;
+    parser_state *parser = NULL;
     return parser;
 }
