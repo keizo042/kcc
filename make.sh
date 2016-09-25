@@ -3,7 +3,7 @@ PWD=`dirname $0`
 INCLUDE_DIR="$PWD"
 TEST_DIR="$PWD/test"
 TEST_INCLUDE_DIR=$TEST_DIR
-CC="clang -pedantic -Wall"
+CC="clang -pedantic -Wall -Wno-unused-function"
 
 case $1 in
     "test" )
@@ -36,7 +36,8 @@ case $1 in
             fi
             F="$F ${f%.c}.o"
         done
-        $CC -I$INCLUDE_DIR  -c main.c 
+        echo "build main..."
+        $CC -I$INCLUDE_DIR  -c main.c  
         echo "build kcc..."
         $CC -I$INCLUDE_DIR  main.o -o kcc 
         ;;
