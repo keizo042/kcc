@@ -5,7 +5,7 @@ FILES="kcc lex parse ast"
 INCLUDE_DIR=""
 TEST_FILES=" "
 TEST_INCLUDE_DIR="$PWD/test"
-CC="gcc"
+CC="gcc -std=c99"
 
 case $1 in
     "test" )
