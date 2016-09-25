@@ -20,6 +20,10 @@ case $1 in
         do
             $CC -g -I$INCLUDE_DIR -I$TEST_INCLUDE_DIR $TEST_DIR/$f  -o $TEST_DIR/${f%.c}.out
         done
+        for obj in $( ls $TEST_DIR | grep .out$ );
+        do
+            $TEST_DIR/$obj
+        done
         ;;
     "clean")
         rm -rf *.o  ./kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM >> /dev/null 2>&1
