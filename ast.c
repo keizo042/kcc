@@ -3,6 +3,33 @@
 
 typedef int tag_t;
 
+struct expr_def_func_s {
+    char *type;
+    char *sym;
+    char **args;
+    stmts_t *stmt;
+};
+
+
+struct expr_def_func_s expr_def_func_t;
+
+struct expr_def_var_s {
+    char **keywords;
+    char *type;
+    char **varname;
+    char **varvalue;
+};
+typedef struct expr_def_var_s expr_def_var_t;
+
+struct expr_def_s {
+    union {
+        expr_def_t *var;
+        expr_def_func_t *func;
+    }data;
+};
+
+typedef struct expr_def_s expr_def_t;
+
 struct uniop_s {
     char *op;
     char *value;
