@@ -31,6 +31,7 @@ case $1 in
 
         ;;
     * )
+        rm -rf *.o  ./kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM >> /dev/null 2>&1
         F=""
         for f in $(ls $PWD | grep .c$ | grep -v main.c )
         do
