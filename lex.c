@@ -81,7 +81,7 @@ static const typs_t keywords[] = {{"if", LEX_TOKEN_IF},
 
 static const char *specifics[] = {"struct", "union", ""};
 
-static const char *qualified[] = {"typedef", "static", "const", ""};
+static const char *qualified[] = {"typedef", "static", "const", "inline"};
 
 
 // state transmisition tables

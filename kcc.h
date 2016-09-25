@@ -2,6 +2,6 @@
 #define __KCC_H
 
 #include "lex.h"
-#include "parse.h"
+#include "parser.h"
 #include "ast.h"
 #endif
