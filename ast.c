@@ -1,4 +1,5 @@
 #include "ast.h"
+#include <stdint.h>
 
 
 struct expr_def_func_s {
@@ -67,9 +68,6 @@ struct exprs_s {
     struct expr_s *next;
 };
 
-struct stmt_s {
-    exprs_t *exprs;
-};
 
 struct stmt_if_s {
     expr_t *expr;
@@ -82,9 +80,24 @@ struct stmt_for_s {
     stmt_t *stmt;
 };
 
+struct stmt_switch_case_s {
+    expr_t *expr;
+    stmts_t *stmts;
+};
+
 struct stmt_while_s {
     expr_t *expr;
     stmt_t *stmt;
+};
+
+struct stmt_s {
+    uint64_t id;
+    union {
+        exprs_t *exprs;
+        stmt_if_t *ifstmt;
+        stmt_while_t *whilestmt;
+        stmt_for_t *forstmt;
+    }data;
 };
 
 struct stmts_s {
