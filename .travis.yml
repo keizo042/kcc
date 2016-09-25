@@ -1,5 +1,5 @@
 language: c
 compiler:
-    - clang
+    - clang -std=c99
 script:
     - ./make.sh 
