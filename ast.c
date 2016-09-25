@@ -27,7 +27,7 @@ struct expr_def_s {
         expr_def_var_t *var;
         expr_def_func_t *f;
         expr_def_struct_t *srct;
-    }data;
+    } data;
 };
 
 struct expr_funcall_s {
@@ -43,23 +43,23 @@ struct uniop_s {
 };
 
 struct binop_s {
-    char  *op;
+    char *op;
     char *lvalue;
     char *rvalue;
 };
 
 struct op_s {
     union {
-        uniop_t* uniop;
-        binop_t* binop;
-    }data;
+        uniop_t *uniop;
+        binop_t *binop;
+    } data;
 };
 
 struct expr_s {
     union {
-    char *sym;
-    op_t *op;
-    }data;
+        char *sym;
+        op_t *op;
+    } data;
     tag_t t;
 };
 
@@ -97,11 +97,10 @@ struct stmt_s {
         stmt_if_t *ifstmt;
         stmt_while_t *whilestmt;
         stmt_for_t *forstmt;
-    }data;
+    } data;
 };
 
 struct stmts_s {
     stmt_t *stmt;
     struct stmt_s *next;
-
 };
