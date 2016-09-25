@@ -71,9 +71,13 @@ typedef struct typs_s {
     tok_typ_t typ;
 } typs_t;
 
-static const typs_t keywords[] = {{"if", LEX_TOKEN_IF},     {"while", LEX_TOKEN_WHILE},
-                                  {"else", LEX_TOKEN_ELSE}, {"switch", LEX_TOKEN_SWITCH},
-                                  {"case", LEX_TOKEN_CASE}, {}};
+static const typs_t keywords[] = {{"if", LEX_TOKEN_IF},
+                                  {"while", LEX_TOKEN_WHILE},
+                                  {"else", LEX_TOKEN_ELSE},
+                                  {"switch", LEX_TOKEN_SWITCH},
+                                  {"case", LEX_TOKEN_CASE},
+                                  {"return", LEX_TOKEN_RETURN},
+                                  {}};
 
 static const char *specifics[] = {"struct", "union", ""};
 
