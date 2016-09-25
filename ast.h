@@ -9,6 +9,9 @@ typedef struct expr_def_func_s expr_def_func_t;
 struct expr_def_var_s;
 typedef struct expr_def_var_s expr_def_var_t;
 
+struct expr_def_struct_s;
+typedef struct expr_def_struct_s expr_def_struct_t;
+
 struct expr_def_s;
 typedef struct expr_def_s expr_def_t;
 

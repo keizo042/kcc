@@ -17,10 +17,15 @@ struct expr_def_var_s {
     char **varvalue;
 };
 
+struct expr_def_struct_s {
+    expr_def_var_t **vars;
+};
+
 struct expr_def_s {
     union {
         expr_def_var_t *var;
         expr_def_func_t *f;
+        expr_def_struct_t *srct;
     }data;
 };
 
@@ -30,10 +35,6 @@ struct expr_funcall_s {
     char **args;
 };
 
-struct expr_struct_s {
-    char **name;
-    char **value;
-};
 
 struct uniop_s {
     char *op;
