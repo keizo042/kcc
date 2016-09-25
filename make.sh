@@ -7,6 +7,7 @@ CC="clang -pedantic -Wall -Wno-unused-function"
 
 case $1 in
     "test" )
+        rm -rf *.o  ./kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM >> /dev/null 2>&1
         for f in $(ls $PWD | grep .c$);
         do
             $CC -c $f
