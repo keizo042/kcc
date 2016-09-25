@@ -30,6 +30,10 @@ struct expr_funcall_s {
     char **args;
 };
 
+struct expr_struct_s {
+    char **name;
+    char **value;
+};
 
 struct uniop_s {
     char *op;
@@ -64,6 +68,22 @@ struct exprs_s {
 
 struct stmt_s {
     exprs_t *exprs;
+};
+
+struct stmt_if_s {
+    expr_t *expr;
+};
+
+struct stmt_for_s {
+    expr_t *arg1;
+    expr_t *arg2;
+    expr_t *arg3;
+    stmt_t *stmt;
+};
+
+struct stmt_while_s {
+    expr_t *expr;
+    stmt_t *stmt;
 };
 
 struct stmts_s {
