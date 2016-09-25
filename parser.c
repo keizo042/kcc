@@ -5,8 +5,6 @@
 #include <string.h>
 
 
-struct parser_state;
-typedef struct parser_state parser_state;
 
 typedef int (*parser_f)(parser_state *);
 
