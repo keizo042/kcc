@@ -2,6 +2,4 @@
 #include <stdint.h>
 #include <string.h>
 
-int compile() {
-    return 1;
-}
+int compile() { return 1; }

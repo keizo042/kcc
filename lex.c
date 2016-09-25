@@ -62,6 +62,17 @@ struct lex_state_s {
     lex_tok_stream_t *stream;
 };
 
+lex_state lex_state_open(char *src) {
+    lex_state *state = (lex_state *)malloc(sizeof(lex_state));
+    state->src       = src;
+    state->pos       = 0;
+    state->len       = 0;
+    state->line      = 0;
+    state->head      = NULL;
+    state->stream    = NULL;
+    return state;
+}
+
 
 
 static const char *typs[] = {"int", "float", "double", "char", "uint32_t", "uint64_t", ""};
@@ -177,7 +188,7 @@ static int lex_identity(lex_state *state) {
     if (check_ident_is(state, qualified)) {
         return lex_emit(state, LEX_TOKEN_KEYWORD);
     }
-    if(check_ident_is(state,specifics) ){
+    if (check_ident_is(state, specifics)) {
         return lex_emit(state, LEX_TOKEN_KEYWORD);
     }
 
@@ -269,8 +280,8 @@ static int lex_text(lex_state *state) {
 }
 
 lex_state *lex(char *src) {
-    int s = LEX_ERR;
-    lex_state *state = NULL;
+    int s            = LEX_ERR;
+    lex_state *state = lex_state_open(src);
 
 
     while (s == LEX_CONTINUE) {
@@ -293,7 +304,23 @@ lex_state *lex(char *src) {
 */
 #ifdef __DEBUG
 
-int test1(char *src){
-    return 1;
+int test100(char *src) {
+    lex_state *state = lex_state_open(src);
+    return lex_digit(state);
+}
+
+int test200(char *src) {
+    lex_state *state = lex_state_open(src);
+    return lex_string(state);
+}
+
+int test300(char *src) {
+    lex_state *state = lex_state_open(src);
+    return lex_identity(state);
+}
+
+int test400(char *src) {
+    lex_state *state = lex_state_open(src);
+    return lex_text(state);
 }
 #endif

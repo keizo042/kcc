@@ -1,8 +1,4 @@
-#include <stdio.h>
 #include "kcc.h"
+#include <stdio.h>
 
-int
-main(int argc, char* argv[]) {
-    
-    return 0;
-}
+int main(int argc, char *argv[]) { return 0; }
