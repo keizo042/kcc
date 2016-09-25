@@ -53,14 +53,15 @@ struct lex_tok_stream_s {
 
 typedef struct lex_tok_stream_s lex_tok_stream_t;
 
-typedef struct lex_state {
+struct lex_state_s {
     char *src;
     uint64_t pos;
     uint64_t len;
     uint64_t line;
     lex_tok_stream_t *head;
     lex_tok_stream_t *stream;
-} lex_state;
+};
+
 
 
 static const char *typs[] = {"int", "float", "double", "char", "uint32_t", "uint64_t", ""};
@@ -261,7 +262,7 @@ static int lex_text(lex_state *state) {
 
 lex_state *lex(char *src) {
     int s;
-    struct lex_state *state;
+    lex_state *state;
 
 
     while (s == LEX_CONTINUE) {

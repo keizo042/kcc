@@ -35,4 +35,7 @@
 #define LEX_FIN 0
 #define LEX_CONTINUE 1
 #define LEX_ERR 2
+
+struct lex_state_s;
+typedef struct lex_state_s lex_state;
 #endif

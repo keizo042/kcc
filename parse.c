@@ -11,4 +11,7 @@ typedef struct parser_state parser_state;
 
 
 
-parser_state *parse(lex_state *state) {}
+parser_state *parse(lex_state *lexer) {
+    parser_state *parser;
+    return parser;
+}
