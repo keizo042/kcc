@@ -154,16 +154,17 @@ static inline int check_ident_is_type(lex_state *state) {
     return 0;
 }
 
-static inline int check_ident_is_qualified(lex_state *state) {
+static inline int check_ident_is(lex_state *state, const char **words) {
     int i, len;
-    for (i = 0; qualified[i] != '\0'; i++) {
-        if (strncmp(state->src + state->pos, qualified[i], len = strlen(qualified[i])) == 0) {
+    for (i = 0; words[i] != '\0'; i++) {
+        if (strncmp(state->src + state->pos, words[i], len = strlen(words[i])) == 0) {
             state->len = len;
             return 1;
         }
     }
     return 0;
 }
+
 
 static int lex_identity(lex_state *state) {
     int len;
@@ -173,7 +174,10 @@ static int lex_identity(lex_state *state) {
     if (check_ident_is_type(state)) {
         return lex_emit(state, LEX_TOKEN_TYPE);
     }
-    if (check_ident_is_qualified(state)) {
+    if (check_ident_is(state, qualified)) {
+        return lex_emit(state, LEX_TOKEN_KEYWORD);
+    }
+    if(check_ident_is(state,specifics) ){
         return lex_emit(state, LEX_TOKEN_KEYWORD);
     }
 
@@ -265,8 +269,8 @@ static int lex_text(lex_state *state) {
 }
 
 lex_state *lex(char *src) {
-    int s;
-    lex_state *state;
+    int s = LEX_ERR;
+    lex_state *state = NULL;
 
 
     while (s == LEX_CONTINUE) {
