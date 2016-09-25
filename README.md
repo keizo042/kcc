@@ -1,5 +1,6 @@
 kcc
 ===
+[![Build Status](https://travis-ci.org/keizo042/kcc.svg?branch=master)](https://travis-ci.org/keizo042/kcc)
 
 Usage:
 ------
