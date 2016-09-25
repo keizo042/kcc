@@ -77,7 +77,7 @@ static const typs_t keywords[] = {{"if", LEX_TOKEN_IF},
                                   {"switch", LEX_TOKEN_SWITCH},
                                   {"case", LEX_TOKEN_CASE},
                                   {"return", LEX_TOKEN_RETURN},
-                                  {}};
+                                  {NULL}};
 
 static const char *specifics[] = {"struct", "union", ""};
 
@@ -278,3 +278,18 @@ lex_state *lex(char *src) {
     }
     return state;
 }
+
+
+
+/*
+   *
+   * test functions
+   *
+   *
+*/
+#ifdef __DEBUG
+
+int test1(char *src){
+    return 1;
+}
+#endif

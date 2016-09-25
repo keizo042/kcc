@@ -5,7 +5,9 @@
 #include <string.h>
 
 
-struct parser_state {};
+struct parser_state {
+    char *sym;
+};
 
 typedef struct parser_state parser_state;
 
