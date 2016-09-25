@@ -3,9 +3,36 @@
 
 typedef int tag_t;
 
+struct uniop_s {
+    char *op;
+    char *value;
+};
+
+typedef struct uniop_s uniop_t;
+
+struct binop_s {
+    char  *op;
+    char *lvalue;
+    char *rvalue;
+};
+
+typedef struct binop_s binop_t;
+
+
+struct op_s {
+    union {
+        uniop_t* uniop;
+        binop_t* binop;
+    }data;
+};
+
+typedef struct op_s op_t;
+
+
 struct expr_s {
     union {
     char *sym;
+    op_t *op;
     }data;
     tag_t t;
 };
