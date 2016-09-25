@@ -62,7 +62,7 @@ struct lex_state_s {
     lex_tok_stream_t *stream;
 };
 
-lex_state lex_state_open(char *src) {
+lex_state* lex_state_open(char *src) {
     lex_state *state = (lex_state *)malloc(sizeof(lex_state));
     state->src       = src;
     state->pos       = 0;
