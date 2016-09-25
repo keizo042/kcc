@@ -4,7 +4,9 @@
 typedef int tag_t;
 
 struct expr_s {
+    union {
     char *sym;
+    }data;
     tag_t t;
 };
 
