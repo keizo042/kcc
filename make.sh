@@ -30,6 +30,23 @@ case $1 in
         rm -rf *.o  ./kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM >> /dev/null 2>&1
 
         ;;
+    "verbose")
+        rm -rf *.o  ./kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM >> /dev/null 2>&1
+        F=""
+        for f in $(ls $PWD | grep .c$ | grep -v main.c )
+        do
+            $CC -Wall -Werror -I$INCLUDE_DIR -c $f
+            if [ ! $? -eq 0 ]; then
+                echo "fail"
+                exit -1;
+            fi
+            F="$F ${f%.c}.o"
+        done
+        echo "build main..."
+        $CC -Wall -Werror I$INCLUDE_DIR  -c main.c  
+        echo "build kcc..."
+        $CC -Wall -Werror -I$INCLUDE_DIR  main.o -o kcc 
+        ;;
     * )
         rm -rf *.o  ./kcc $TEST_DIR/*.out $TEST_DIR/*.dSYM >> /dev/null 2>&1
         F=""
