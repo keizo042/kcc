@@ -12,7 +12,7 @@ int test(int b, char *file, char *msg)
 {
         if(b){
         }else{
-                printf("%s,%s:fail\n", file, msg);
+                printf("%s     \t%s:fail\n", file, msg);
         }
         return b;
 }
