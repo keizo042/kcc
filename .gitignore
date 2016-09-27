@@ -1,4 +1,6 @@
 /kcc
+tags
+TAGS
 *.o
 /test/test
 /test/*.o
