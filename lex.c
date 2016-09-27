@@ -302,7 +302,7 @@ lex_state *lex(char *src) {
    *
    *
 */
-#ifdef __DEBUG
+#ifdef DEBUG_H
 
 int test100(char *src) {
     lex_state *state = lex_state_open(src);
