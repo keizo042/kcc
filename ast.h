@@ -3,8 +3,6 @@
 
 typedef int tag_t;
 
-struct expr_def_function_s;
-typedef struct expr_def_func_s expr_def_func_t;
 
 struct expr_def_var_s;
 typedef struct expr_def_var_s expr_def_var_t;
@@ -41,6 +39,9 @@ typedef struct stmt_switch_case_s stmt_switch_case_t;
 
 struct stmt_if_s;
 typedef struct stmt_if_s stmt_if_t;
+
+struct stmt_def_func_s;
+typedef struct stmt_def_func_s stmt_def_func_t;
 
 struct stmt_s;
 typedef struct stmt_s stmt_t;

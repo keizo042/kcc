@@ -2,13 +2,6 @@
 #include <stdint.h>
 
 
-struct expr_def_func_s {
-    char *type;
-    char *sym;
-    int argc;
-    char **args;
-    stmts_t *stmt;
-};
 
 
 struct expr_def_var_s {
@@ -88,6 +81,14 @@ struct stmt_switch_case_s {
 struct stmt_while_s {
     expr_t *expr;
     stmt_t *stmt;
+};
+
+struct stmt_def_func_s {
+    char *type;
+    char *sym;
+    int argc;
+    char **args;
+    stmts_t *stmt;
 };
 
 struct stmt_s {
