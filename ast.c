@@ -18,7 +18,6 @@ struct expr_def_struct_s {
 struct expr_def_s {
     union {
         expr_def_var_t *var;
-        expr_def_func_t *f;
         expr_def_struct_t *srct;
     } data;
 };
