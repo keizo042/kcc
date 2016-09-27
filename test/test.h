@@ -5,4 +5,13 @@
 #include "parser.h"
 #include "ast.h"
 #include "gen.h"
+
+
+void test(int b, char *file, char *msg)
+{
+        if(b){
+        }else{
+                printf("%s,%s:fail\n", file, msg);
+        }
+}
 #endif
