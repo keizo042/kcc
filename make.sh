@@ -19,7 +19,7 @@ case $1 in
 
         for f in $( ls $TEST_DIR | grep .c$ );
         do
-            $CC -g -I$INCLUDE_DIR -I$TEST_INCLUDE_DIR $TEST_DIR/$f  -o $TEST_DIR/${f%.c}.out
+            $CC -g -D"DEBUG_H"  -I$INCLUDE_DIR -I$TEST_INCLUDE_DIR $TEST_DIR/$f  -o $TEST_DIR/${f%.c}.out
         done
         for obj in $( ls $TEST_DIR | grep .out$ );
         do
