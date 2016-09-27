@@ -7,7 +7,7 @@
 #include "gen.h"
 
 
-void test(int b, char *file, char *msg)
+int test(int b, char *file, char *msg)
 {
         if(b){
         }else{
