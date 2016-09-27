@@ -12,8 +12,6 @@
     lex_token_new((state)->src + (state)->pos, (state)->len, (t), (state)->pos, (state)->line)
 
 
-// token definitions
-typedef uint64_t tok_typ_t;
 
 struct lex_tok_s {
     char *sym;
@@ -307,20 +305,30 @@ lex_state *lex(char *src) {
 
 int test100(char *src) {
     lex_state *state = lex_state_open(src);
+    state->src = src;
     return lex_digit(state);
 }
 
 int test200(char *src) {
     lex_state *state = lex_state_open(src);
+    state->src = src;
     return lex_string(state);
 }
 
 int test300(char *src) {
     lex_state *state = lex_state_open(src);
+    state->src = src;
     return lex_identity(state);
 }
 
 int test400(char *src) {
     lex_state *state = lex_state_open(src);
+    state->src = src;
     return lex_text(state);
+}
+
+int test500(char *src, tok_typ_t t) {
+    lex_state *state = lex_state_open(src);
+    state->src = src;
+    return lex_emit(state, t);
 }

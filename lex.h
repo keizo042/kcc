@@ -1,5 +1,6 @@
 #ifndef __KCC_LEX_H
 #define __KCC_LEX_H
+#include <stdint.h>
 
 #define LEX_TOKEN_END 0 // ;
 #define LEX_TOKEN_DIGIT 1
@@ -40,10 +41,13 @@
 struct lex_state_s;
 typedef struct lex_state_s lex_state;
 
+// token definitions
+typedef uint64_t tok_typ_t;
 
 int test100(char *src);
 int test200(char *src);
 int test300(char *src);
 int test400(char *src);
+int test500(char *src, tok_typ_t t);
 #endif
 
