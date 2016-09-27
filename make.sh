@@ -24,6 +24,7 @@ case $1 in
         done
         for obj in $( ls $TEST_DIR | grep .out$ );
         do
+            printf "run %s......\n"  $obj
             $TEST_DIR/$obj
         done
         ;;
