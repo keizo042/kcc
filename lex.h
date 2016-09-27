@@ -39,11 +39,12 @@
 
 struct lex_state_s;
 typedef struct lex_state_s lex_state;
-#endif
 
-#ifdef ___DEBUG
+#ifdef DEBUG_H
 
 int test100(char *src);
 int test200(char *src);
 int test300(char *src);
 #endif
+#endif
+
