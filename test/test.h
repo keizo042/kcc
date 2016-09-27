@@ -6,6 +6,7 @@
 #include "ast.h"
 #include "gen.h"
 
+extern int test100(char *);
 
 int test(int b, char *file, char *msg)
 {
@@ -13,5 +14,6 @@ int test(int b, char *file, char *msg)
         }else{
                 printf("%s,%s:fail\n", file, msg);
         }
+        return b;
 }
 #endif
