@@ -108,6 +108,7 @@ static int lex_emit(lex_state *state, tok_typ_t t) {
     stream->prev        = state->stream;
 
     state->stream = state->stream->next;
+    state->pos++;
     if (t == LEX_TOKEN_EOF) {
         return LEX_FIN;
     } else {
@@ -143,6 +144,7 @@ static int lex_digit(lex_state *state) {
         state->len++;
     }
     if (state->src[state->pos + state->len] != '.') {
+        state->len--;
         lex_emit(state, LEX_TOKEN_DIGIT);
         return LEX_CONTINUE;
     }
