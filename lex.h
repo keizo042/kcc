@@ -44,5 +44,6 @@ typedef struct lex_state_s lex_state;
 int test100(char *src);
 int test200(char *src);
 int test300(char *src);
+int test400(char *src);
 #endif
 
