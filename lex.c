@@ -124,12 +124,12 @@ static int lex_emit(lex_state *state, tok_typ_t t) {
 
 
 static int lex_string(lex_state *state) {
-    if (state->src[state->pos] != '"') {
+    if (state->start[state->pos] != '"') {
         return LEX_ERR;
     }
     state->pos++;
-    while (state->src[state->pos + state->len] != '"') {
-        if (state->src[state->pos + state->len] == '\0') {
+    while (state->start[state->pos + state->len] != '"') {
+        if (state->start[state->pos + state->len] == '\0') {
             return LEX_ERR;
         }
         state->len++;
@@ -142,18 +142,18 @@ static int lex_string(lex_state *state) {
 }
 
 static int lex_digit(lex_state *state) {
-    if (!ISDIGIT(state->src[state->pos])) {
+    if (!ISDIGIT(state->start[state->pos])) {
         return LEX_ERR;
     }
-    while (ISDIGIT(state->src[state->pos + state->len])) {
+    while (ISDIGIT(state->start[state->pos + state->len])) {
         state->len++;
     }
-    if (state->src[state->pos + state->len] != '.') {
+    if (state->start[state->pos + state->len] != '.') {
         state->len--;
         lex_emit(state, LEX_TOKEN_DIGIT);
         return LEX_CONTINUE;
     }
-    while (ISDIGIT(state->src[state->pos + state->len])) {
+    while (ISDIGIT(state->start[state->pos + state->len])) {
         state->len++;
     }
     lex_emit(state, LEX_TOKEN_DIGIT);
@@ -164,7 +164,7 @@ static int lex_digit(lex_state *state) {
 static inline int check_ident_is_type(lex_state *state) {
     int i, len;
     for (i = 0; typs[i] != '\0'; i++) {
-        if (strncmp(state->src + state->pos, typs[i], len = strlen(typs[i])) == 0) {
+        if (strncmp(state->start + state->pos, typs[i], len = strlen(typs[i])) == 0) {
             state->len = len;
             return 1;
         }
@@ -175,7 +175,7 @@ static inline int check_ident_is_type(lex_state *state) {
 static inline int check_ident_is(lex_state *state, const char **words) {
     int i, len;
     for (i = 0; words[i] != '\0'; i++) {
-        if (strncmp(state->src + state->pos, words[i], len = strlen(words[i])) == 0) {
+        if (strncmp(state->start + state->pos, words[i], len = strlen(words[i])) == 0) {
             state->len = len;
             return 1;
         }
@@ -186,7 +186,7 @@ static inline int check_ident_is(lex_state *state, const char **words) {
 
 static int lex_identity(lex_state *state) {
     int len;
-    if (!ISCHAR(state->src[state->pos + state->len])) {
+    if (!ISCHAR(state->start[state->pos + state->len])) {
         return LEX_ERR;
     }
     if (check_ident_is_type(state)) {
@@ -200,12 +200,12 @@ static int lex_identity(lex_state *state) {
     }
 
     for (int i = 0; keywords[i].sym != NULL; i++) {
-        if (strncmp(state->src + state->pos, keywords[i].sym, len = strlen(keywords[i].sym)) == 0) {
+        if (strncmp(state->start + state->pos, keywords[i].sym, len = strlen(keywords[i].sym)) == 0) {
             state->len = len;
             return lex_emit(state, keywords[i].typ);
         }
     }
-    while (ISIDENT(state->src[state->pos + state->len])) {
+    while (ISIDENT(state->start[state->pos + state->len])) {
         state->len++;
     }
     return lex_emit(state, LEX_TOKEN_IDENT);
@@ -214,7 +214,7 @@ static int lex_identity(lex_state *state) {
 static int lex_text(lex_state *state) {
 
     while (1) {
-        switch (state->src[state->pos]) {
+        switch (state->start[state->pos]) {
         case '\0':
             return lex_emit(state, LEX_TOKEN_EOF);
         case ' ':
@@ -249,15 +249,15 @@ static int lex_text(lex_state *state) {
             state->len++;
             return lex_emit(state, LEX_TOKEN_MORE);
         case '/':
-            if (state->src[state->pos + 1] == '/') {
-                while (state->src[state->pos] != '\n') {
+            if (state->start[state->pos + 1] == '/') {
+                while (state->start[state->pos] != '\n') {
                     state->pos++;
                 }
             }
-            if (state->src[state->pos + 1] == '*') {
+            if (state->start[state->pos + 1] == '*') {
                 state->pos = state->pos + 2;
                 while (1) {
-                    if (state->src[state->pos - 1] == '*' && state->src[state->pos] == '/') {
+                    if (state->start[state->pos - 1] == '*' && state->start[state->pos] == '/') {
                         state->pos++;
                         return LEX_CONTINUE;
                     }
@@ -276,7 +276,7 @@ static int lex_text(lex_state *state) {
             state->len++;
             return lex_emit(state, LEX_TOKEN_MULTI);
         case '#':
-            while (state->src[state->pos] != '\n') {
+            while (state->start[state->pos] != '\n') {
                 state->pos++;
             }
             return LEX_CONTINUE;
@@ -286,9 +286,9 @@ static int lex_text(lex_state *state) {
     }
 }
 
-lex_state *lex(char *src) {
+lex_state *lex(char *start) {
     int s            = LEX_ERR;
-    lex_state *state = lex_state_open(src);
+    lex_state *state = lex_state_open(start);
 
 
     while (s == LEX_CONTINUE) {
@@ -311,7 +311,7 @@ lex_state *lex(char *src) {
 */
 
 int test100(char *src) {
-    lex_state *state = lex_state_open(src);
+    lex_state *state = lex_state_open(start);
     state->src = src;
     return lex_digit(state);
 }
