@@ -48,6 +48,10 @@ struct lex_tok_stream_s {
 
 typedef struct lex_tok_stream_s lex_tok_stream_t;
 
+lex_tok_stream_t *lex_tok_stream_new() {
+    return malloc( sizeof(lex_tok_stream_t) );
+}
+
 struct lex_state_s {
     char *src;
     char *start;
@@ -286,6 +290,8 @@ static int lex_text(lex_state *state) {
 lex_state *lex(char *start) {
     int s            = LEX_ERR;
     lex_state *state = lex_state_open(start);
+    state->stream = lex_tok_stream_new();
+    state->head = state->stream;
 
 
     while (s == LEX_CONTINUE) {
