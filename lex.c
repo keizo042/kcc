@@ -311,7 +311,7 @@ lex_state *lex(char *start) {
 */
 
 int test100(char *src) {
-    lex_state *state = lex_state_open(start);
+    lex_state *state = lex_state_open(src);
     state->src = src;
     return lex_digit(state);
 }
