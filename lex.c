@@ -3,13 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define get_token_state(state) (state)->stream->token
 #define ISDIGIT(x) (('0' <= (x)) && ((x) <= '0'))
 #define ISASCII(x) ((0 <= (x)) && ((x) <= 255))
 #define ISCHAR(x) (('a' <= (x)) && ((x) <= 'z')) || (('A' <= (x) && (x) <= 'Z'))
 #define ISIDENT(x) (ISDIGIT(x) || ISCHAR(x))
-#define lex_token_new_state(state, t)                                                              \
-    lex_token_new((state)->src + (state)->pos, (state)->len, (t), (state)->pos, (state)->line)
 
 
 
@@ -98,7 +95,7 @@ static const char *qualified[] = {"typedef", "static", "const", "inline"};
 // state transmisition tables
 
 static int lex_emit(lex_state *state, tok_typ_t t) {
-    lex_tok_t *token         = lex_token_new_state(state, t);
+    lex_tok_t *token         =  lex_token_new(state->start + state->pos,state->len, t, state->pos, state->line);
     lex_tok_stream_t *stream = (lex_tok_stream_t *)malloc(sizeof(lex_tok_stream_t));
     stream->next             = NULL;
 
