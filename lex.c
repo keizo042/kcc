@@ -19,14 +19,12 @@ struct lex_tok_s {
 
 typedef struct lex_tok_s lex_tok_t;
 
-static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t pos,
-                                uint64_t line) {
+static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t line) {
     lex_tok_t *token = (lex_tok_t *)malloc(sizeof(lex_tok_t));
     token->sym       = (char *)malloc(sizeof(char) * len + 1);
 
     strncpy(token->sym, sym, len);
     token->typ  = typ;
-    token->pos  = pos;
     token->line = line;
     return token;
 }
@@ -49,7 +47,9 @@ struct lex_tok_stream_s {
 typedef struct lex_tok_stream_s lex_tok_stream_t;
 
 lex_tok_stream_t *lex_tok_stream_new() {
-    return malloc( sizeof(lex_tok_stream_t) );
+    lex_tok_stream_t *stream = malloc( sizeof(lex_tok_stream_t) );
+    stream->prev = NULL;
+    return stream;
 }
 
 struct lex_state_s {
@@ -96,13 +96,12 @@ static const char *specifics[] = {"struct", "union", ""};
 static const char *qualified[] = {"typedef", "static", "const", "inline"};
 
 
+
 // state transmisition tables
 
 static int lex_emit(lex_state *state, tok_typ_t t) {
-    lex_tok_t *token         =  lex_token_new(state->start + state->pos,state->len, t, state->pos, state->line);
+    lex_tok_t *token         =  lex_token_new(state->start + state->pos, state->len, t, state->line);
     lex_tok_stream_t *stream = (lex_tok_stream_t *)malloc(sizeof(lex_tok_stream_t));
-    stream->next             = NULL;
-
     state->stream->token = token;
 
     state->stream->next = stream;
@@ -110,8 +109,7 @@ static int lex_emit(lex_state *state, tok_typ_t t) {
 
     state->stream = state->stream->next;
 
-    state->start =  state->src + state->len + 1;
-    state->pos++;
+    state->start =  state->start + state->pos + state->len + 1;
     state->pos = 0;
     state->len = 0;
 
