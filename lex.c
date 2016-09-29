@@ -53,6 +53,7 @@ typedef struct lex_tok_stream_s lex_tok_stream_t;
 
 struct lex_state_s {
     char *src;
+    char *start;
     uint64_t pos;
     uint64_t len;
     uint64_t line;
@@ -63,6 +64,7 @@ struct lex_state_s {
 lex_state* lex_state_open(char *src) {
     lex_state *state = (lex_state *)malloc(sizeof(lex_state));
     state->src       = src;
+    state->start     = state->src;
     state->pos       = 0;
     state->len       = 0;
     state->line      = 0;
@@ -106,7 +108,12 @@ static int lex_emit(lex_state *state, tok_typ_t t) {
     stream->prev        = state->stream;
 
     state->stream = state->stream->next;
+
+    state->start =  state->src + state->len + 1;
     state->pos++;
+    state->pos = 0;
+    state->len = 0;
+
     if (t == LEX_TOKEN_EOF) {
         return LEX_FIN;
     } else {
