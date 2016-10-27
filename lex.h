@@ -38,9 +38,15 @@
 #define LEX_CONTINUE 1
 #define LEX_ERR 2
 
+struct lex_tok_s;
+typedef struct lex_tok_s lex_tok_t;
+
+struct lex_tok_stream_s;
+typedef struct lex_tok_stream_s lex_tok_stream_t;
 struct lex_state_s;
 typedef struct lex_state_s lex_state;
 
+lex_state *lex(char *src);
 // token definitions
 typedef uint64_t tok_typ_t;
 
@@ -50,4 +56,3 @@ int test300(char *src);
 int test400(char *src);
 int test500(char *src, tok_typ_t t);
 #endif
-

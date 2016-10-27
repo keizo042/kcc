@@ -15,19 +15,18 @@ ready:
 	[ -d $(bin) ] || mkdir $(bin)
 
 
-lex:
+lex: lex.c
 	$(CC) $(opt) -c lex.c
 
-parser:
+parser: parser.c
 	$(CC) $(opt) -c parser.c
 
-gen:
+gen: gen.c
 	$(CC) $(opt) -c gen.c
 
 verbose: all
 
 test: 
-	./test.sh
 	
 
 	
