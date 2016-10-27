@@ -35,4 +35,4 @@ alltest:
 
 clean:
 	rm -rf $(bin)
-	rm *.o test/*.o test/*.out > /dev/null 2>&1
+	rm *.o test/*.o test/*.out > /dev/null 2>&1 || exit 0
