@@ -1,6 +1,7 @@
 #include "lex.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #define ISDIGIT(x) (('0' <= (x)) && ((x) <= '0'))
@@ -59,7 +60,16 @@ static void lex_tok_free(lex_tok_t *token) {
 }
 
 char *lex_tok_sym(lex_tok_t *token) { return token->sym; }
-tok_typ_t lex_tok_typ(lex_tok_t *token) { return token->typ; }
+char *lex_tok_typ_str(lex_tok_t *token) {
+    if(token == NULL)
+    {
+        return " ";
+    }
+    switch (token->typ) {
+    default:
+        return "unkown";
+    }
+}
 
 lex_tok_stream_t *lex_tok_stream_new() {
     lex_tok_stream_t *stream = malloc(sizeof(lex_tok_stream_t));
@@ -262,9 +272,17 @@ lex_state *lex(char *src) {
 
 
 
-/*
-   *
-   * test functions
-   *
-   *
-*/
+int lex_tok_pp(lex_tok_t *token) {
+    printf("%s:%s",lex_tok_typ_str(token), lex_tok_sym(token));
+    return 0;
+}
+
+int lex_tok_stream_pp(lex_tok_stream_t *stream) {
+    if (stream == NULL) {
+        return 0;
+    }
+    lex_tok_pp(stream->token);
+    printf(", ");
+    lex_tok_stream_pp(stream->next);
+    return 0;
+}
