@@ -4,14 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ISDIGIT(x) (('0' <= (x)) && ((x) <= '0'))
+#define ISDIGIT(x) (('0' <= (x)) && ((x) <= '9'))
 #define ISASCII(x) ((0 <= (x)) && ((x) <= 255))
 #define ISCHAR(x) (('a' <= (x)) && ((x) <= 'z')) || (('A' <= (x) && (x) <= 'Z'))
 #define ISIDENT(x) (ISDIGIT(x) || ISCHAR(x))
 
 static char lex_state_next(lex_state *state);
+static char lex_state_nextN(lex_state *state, int);
 static char lex_state_peek(lex_state *state);
 static char lex_state_pook(lex_state *state);
+static char lex_state_pookN(lex_state *state, int);
 static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t line);
 static void lex_tok_free(lex_tok_t *token);
 char *lex_tok_sym(lex_tok_t *token);
@@ -53,7 +55,15 @@ static void lex_tok_free(lex_tok_t *token) {
     }
 }
 
-char *lex_tok_sym(lex_tok_t *token) { return token->sym; }
+char *lex_tok_sym(lex_tok_t *token) {
+    if (token == NULL) {
+        return "invaild";
+    }
+    if (token->sym == NULL) {
+        return "nonexist";
+    }
+    return token->sym;
+}
 char *lex_tok_typ_str(lex_tok_t *token) {
     if (token == NULL) {
         return " ";
@@ -158,6 +168,12 @@ static char lex_state_peek(lex_state *state) { return *(state->start + state->po
 static char lex_state_next(lex_state *state) {
     return *(state->start + state->pos + state->len + 1);
 }
+static char lex_state_nextN(lex_state *state, int n) {
+    return *(state->start + state->pos + state->len + n);
+}
+static char lex_state_pookN(lex_state *state, int n) {
+    return *(state->start + state->pos + state->len - n);
+}
 
 
 // state transmisition tables
@@ -184,46 +200,35 @@ static int lex_string(lex_state *state) {
     if (lex_state_peek(state) != '"') {
         return LEX_ERR;
     }
-    state->pos++;
-    while (lex_state_next(state) != '"' ||
-           (lex_state_peek(state) != '\\' && lex_state_pook(state) != '\\')) {
-        if (lex_state_next(state) == '\0') {
-            return LEX_ERR;
-        }
+    while (lex_state_next(state) != '\"' && lex_state_peek(state) != '\\' &&
+           lex_state_pookN(state, 2) != '\\') {
         state->len++;
     }
+    state->len++;
+
     lex_emit(state, LEX_TOKEN_STRING);
-    state->start++;
 
     return LEX_CONTINUE;
 }
 
 static int lex_digit(lex_state *state) {
-    if (!ISDIGIT(lex_state_peek(state))) {
-        return LEX_ERR;
-    }
-    state->len++;
-
     while (ISDIGIT(lex_state_peek(state))) {
         state->len++;
     }
     if (lex_state_peek(state) != '.') {
-        state->len--;
         lex_emit(state, LEX_TOKEN_DIGIT);
         return LEX_CONTINUE;
     }
-
+    state->len++;
     while (ISDIGIT(lex_state_peek(state))) {
         state->len++;
     }
     lex_emit(state, LEX_TOKEN_DIGIT);
-
     return LEX_CONTINUE;
 }
 
 
 static int lex_identity(lex_state *state) {
-    int len;
     if (!ISCHAR(lex_state_peek(state))) {
         return LEX_ERR;
     }
@@ -236,7 +241,7 @@ static int lex_identity(lex_state *state) {
 static int lex_text(lex_state *state) {
 
     while (1) {
-        switch (state->start[state->pos]) {
+        switch (lex_state_peek(state)) {
         case '\0':
             return lex_emit(state, LEX_TOKEN_EOF);
         case ' ':
@@ -249,6 +254,9 @@ static int lex_text(lex_state *state) {
         case ':':
             state->len++;
             return lex_emit(state, LEX_TOKEN_CORON);
+        case ';':
+            state->len++;
+            return lex_emit(state, LEX_TOKEN_END);
         case ',':
             state->len++;
             return lex_emit(state, LEX_TOKEN_CONNMA);
@@ -302,14 +310,19 @@ static int lex_text(lex_state *state) {
                 state->pos++;
             }
             return LEX_CONTINUE;
+        case '\"':
+            return lex_string(state);
         default:
+            if (ISDIGIT(lex_state_peek(state))) {
+                return lex_digit(state);
+            }
             return lex_identity(state);
         }
     }
 }
 
 lex_state *lex(char *src) {
-    int s            = LEX_ERR;
+    int s            = LEX_CONTINUE;
     lex_state *state = lex_state_open(src);
     state->stream    = lex_tok_stream_new();
     state->head      = state->stream;
@@ -334,6 +347,11 @@ int lex_tok_pp(lex_tok_t *token) {
 
 int lex_tok_stream_pp(lex_tok_stream_t *stream) {
     if (stream == NULL) {
+        printf("\n");
+        return 0;
+    }
+    if (stream->token == NULL) {
+        printf("\n");
         return 0;
     }
     lex_tok_pp(stream->token);
