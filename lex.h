@@ -43,16 +43,24 @@ typedef struct lex_tok_s lex_tok_t;
 
 struct lex_tok_stream_s;
 typedef struct lex_tok_stream_s lex_tok_stream_t;
-struct lex_state_s;
+struct lex_state_s {
+    char *src;
+    char *start;
+    uint64_t pos;
+    uint64_t len;
+    uint64_t line;
+
+    lex_tok_stream_t *head;
+    lex_tok_stream_t *stream;
+
+    int err;
+    char *err_msg;
+};
 typedef struct lex_state_s lex_state;
 
 lex_state *lex(char *src);
 // token definitions
 typedef uint64_t tok_typ_t;
 
-int test100(char *src);
-int test200(char *src);
-int test300(char *src);
-int test400(char *src);
-int test500(char *src, tok_typ_t t);
+int lex_tok_stream_pp(lex_tok_stream_t *stream) ;
 #endif

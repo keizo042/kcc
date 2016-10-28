@@ -1,7 +1,7 @@
 #include "lex.h"
 #include <stdint.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define ISDIGIT(x) (('0' <= (x)) && ((x) <= '0'))
@@ -12,6 +12,13 @@
 static char lex_state_next(lex_state *state);
 static char lex_state_peek(lex_state *state);
 static char lex_state_pook(lex_state *state);
+static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t line);
+static void lex_tok_free(lex_tok_t *token);
+char *lex_tok_sym(lex_tok_t *token);
+char *lex_tok_typ_str(lex_tok_t *token);
+lex_tok_stream_t *lex_tok_stream_new();
+lex_state *lex_state_open(char *src);
+static int lex_emit(lex_state *state, tok_typ_t t);
 
 
 struct lex_tok_s {
@@ -26,19 +33,6 @@ struct lex_tok_stream_s {
     struct lex_tok_stream_s *next;
 };
 
-struct lex_state_s {
-    char *src;
-    char *start;
-    uint64_t pos;
-    uint64_t len;
-    uint64_t line;
-
-    lex_tok_stream_t *head;
-    lex_tok_stream_t *stream;
-
-    int err;
-    char *err_msg;
-};
 
 static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t line) {
     lex_tok_t *token = (lex_tok_t *)malloc(sizeof(lex_tok_t));
@@ -61,11 +55,72 @@ static void lex_tok_free(lex_tok_t *token) {
 
 char *lex_tok_sym(lex_tok_t *token) { return token->sym; }
 char *lex_tok_typ_str(lex_tok_t *token) {
-    if(token == NULL)
-    {
+    if (token == NULL) {
         return " ";
     }
     switch (token->typ) {
+    case LEX_TOKEN_END:
+        return "LEX_TOKEN_END";
+    case LEX_TOKEN_DIGIT:
+        return "LEX_TOKEN_DIGIT";
+    case LEX_TOKEN_STRING:
+        return "LEX_TOKEN_STRING";
+    case LEX_TOKEN_BRACE_L:
+        return "LEX_TOKEN_BRACE_L";
+    case LEX_TOKEN_BRACE_R:
+        return "LEX_TOKEN_BRACE_R";
+    case LEX_TOKEN_BRACKET_L:
+        return "LEX_TOKEN_BRACKET_L";
+    case LEX_TOKEN_BRACKET_R:
+        return "LEX_TOKEN_BRACKET_R";
+    case LEX_TOKEN_CONNMA:
+        return "LEX_TOKEN_CONNMA";
+    case LEX_TOKEN_CORON:
+        return "LEX_TOKEN_CORON";
+    case LEX_TOKEN_EQ:
+        return "LEX_TOKEN_EQ";
+    case LEX_TOKEN_LESS:
+        return "LEX_TOKEN_LESS";
+    case LEX_TOKEN_MORE:
+        return "LEX_TOKEN_MORE";
+    case LEX_TOKEN_IF:
+        return "LEX_TOKEN_IF";
+    case LEX_TOKEN_ELSE:
+        return "LEX_TOKEN_ELSE";
+    case LEX_TOKEN_WHILE:
+        return "LEX_TOKEN_WHILE";
+    case LEX_TOKEN_SWITCH:
+        return "LEX_TOKEN_SWITCH";
+    case LEX_TOKEN_CASE:
+        return "LEX_TOKEN_CASE";
+    case LEX_TOKEN_GOTO:
+        return "LEX_TOKEN_GOTO";
+    case LEX_TOKEN_KEYWORD:
+        return "LEX_TOKEN_KEYWORD";
+    case LEX_TOKEN_IDENT:
+        return "LEX_TOKEN_IDENT";
+    case LEX_TOKEN_PLUS:
+        return "LEX_TOKEN_PLUS";
+    case LEX_TOKEN_MINUS:
+        return "LEX_TOKEN_MINUS";
+    case LEX_TOKEN_MULTI:
+        return "LEX_TOKEN_MULTI";
+    case LEX_TOKEN_DIV:
+        return "LEX_TOKEN_DIV";
+    case LEX_TOKEN_SQUARE_BRACKET_L:
+        return "LEX_TOKEN_SQUARE_BRACKET_L";
+    case LEX_TOKEN_SQUARE_BRACKET_R:
+        return "LEX_TOKEN_SQUARE_BRACKET_R";
+    case LEX_TOKEN_EOF:
+        return "LEX_TOKEN_EOF";
+    case LEX_TOKEN_TYPE:
+        return "LEX_TOKEN_TYPE";
+    case LEX_TOKEN_QUESTION:
+        return "LEX_TOKEN_QURESTION";
+    case LEX_TOKEN_EXCLAMATION:
+        return "LEX_TOKEN_EXCLAMATION";
+    case LEX_TOKEN_RETURN:
+        return "LEX_TOKEN_RETURN";
     default:
         return "unkown";
     }
@@ -273,7 +328,7 @@ lex_state *lex(char *src) {
 
 
 int lex_tok_pp(lex_tok_t *token) {
-    printf("%s:%s",lex_tok_typ_str(token), lex_tok_sym(token));
+    printf("%s:%s", lex_tok_typ_str(token), lex_tok_sym(token));
     return 0;
 }
 
