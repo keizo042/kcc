@@ -3,12 +3,13 @@
 #include <stdint.h>
 
 typedef int type_tag_t;
-typedef struct expr_def_var_s expr_def_var_t;
-typedef struct expr_def_struct_s expr_def_struct_t;
-typedef struct expr_def_s expr_def_t;
 typedef struct uniop_s uniop_t;
 typedef struct binop_s binop_t;
 typedef struct op_s op_t;
+typedef struct expr_def_var_s expr_def_var_t;
+typedef struct expr_def_struct_s expr_def_struct_t;
+typedef struct expr_def_s expr_def_t;
+typedef struct expr_funcall_s expr_funcall_t;
 typedef struct expr_s expr_t;
 typedef struct exprs_s exprs_t;
 typedef struct stmt_while_s stmt_while_t;
@@ -18,31 +19,6 @@ typedef struct stmt_if_s stmt_if_t;
 typedef struct stmt_def_func_s stmt_def_func_t;
 typedef struct stmt_s stmt_t;
 typedef struct stmts_s stmts_t;
-
-struct expr_def_var_s {
-    char **keywords;
-    char *type;
-    char **varname;
-    char **varvalue;
-};
-
-struct expr_def_struct_s {
-    expr_def_var_t **vars;
-};
-
-struct expr_def_s {
-    union {
-        expr_def_var_t *var;
-        expr_def_struct_t *srct;
-    } data;
-};
-
-struct expr_funcall_s {
-    char *sym;
-    int argc;
-    char **args;
-};
-
 
 struct uniop_s {
     char *op;
@@ -62,12 +38,41 @@ struct op_s {
     } data;
 };
 
+struct expr_def_var_s {
+    char **keywords;
+    char *type;
+    char **varname;
+    char **varvalue;
+};
+
+struct expr_def_struct_s {
+    char *sym;
+    expr_def_var_t **vars;
+};
+
+struct expr_def_s {
+    union {
+        expr_def_var_t *var;
+        expr_def_struct_t *srct;
+    } data;
+};
+
+struct expr_funcall_s {
+    char *sym;
+    int argc;
+    char **args;
+};
+
+
 struct expr_s {
+    type_tag_t t;
     union {
         char *sym;
-        op_t *op;
+        op_t op;
+        expr_def_var_t def_var;
+        expr_def_struct_t def_struct;
+        expr_funcall_t funcall;
     } data;
-    type_tag_t t;
 };
 
 struct exprs_s {
@@ -98,12 +103,13 @@ struct stmt_while_s {
 };
 
 struct stmt_def_func_s {
-    char *type;
+    char *typ;
     char *sym;
     int argc;
     char **args;
     stmts_t *stmt;
 };
+
 
 struct stmt_s {
     uint64_t id;

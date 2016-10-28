@@ -2,6 +2,7 @@
 #define __KCC_LEX_H
 #include <stdint.h>
 
+typedef uint64_t tok_typ_t;
 #define LEX_TOKEN_END 0 // ;
 #define LEX_TOKEN_DIGIT 1
 #define LEX_TOKEN_STRING 2
@@ -38,10 +39,18 @@
 #define LEX_CONTINUE 1
 #define LEX_ERR 2
 
-struct lex_tok_s;
+struct lex_tok_s {
+    char *sym;
+    tok_typ_t typ;
+    uint64_t pos;
+    uint64_t line;
+};
 typedef struct lex_tok_s lex_tok_t;
 
-struct lex_tok_stream_s;
+struct lex_tok_stream_s {
+    lex_tok_t *token;
+    struct lex_tok_stream_s *next;
+};
 typedef struct lex_tok_stream_s lex_tok_stream_t;
 struct lex_state_s {
     char *src;
@@ -60,7 +69,7 @@ typedef struct lex_state_s lex_state;
 
 lex_state *lex(char *src);
 // token definitions
-typedef uint64_t tok_typ_t;
 
-int lex_tok_stream_pp(lex_tok_stream_t *stream) ;
+int lex_tok_stream_pp(lex_tok_stream_t *stream);
+lex_tok_stream_t *lex_tok_stream_next(lex_tok_stream_t *stream);
 #endif

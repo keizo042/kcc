@@ -23,17 +23,7 @@ lex_state *lex_state_open(char *src);
 static int lex_emit(lex_state *state, tok_typ_t t);
 
 
-struct lex_tok_s {
-    char *sym;
-    tok_typ_t typ;
-    uint64_t pos;
-    uint64_t line;
-};
 
-struct lex_tok_stream_s {
-    lex_tok_t *token;
-    struct lex_tok_stream_s *next;
-};
 
 
 static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t line) {
@@ -141,6 +131,8 @@ lex_tok_stream_t *lex_tok_stream_new() {
     stream->next             = NULL;
     return stream;
 }
+
+lex_tok_stream_t *lex_tok_stream_next(lex_tok_stream_t *stream) { return stream->next; }
 
 
 lex_state *lex_state_open(char *src) {
