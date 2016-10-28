@@ -25,7 +25,6 @@ static int lex_emit(lex_state *state, tok_typ_t t);
 
 
 
-
 static lex_tok_t *lex_token_new(char *sym, uint64_t len, tok_typ_t typ, uint64_t line) {
     lex_tok_t *token = (lex_tok_t *)malloc(sizeof(lex_tok_t));
     token->sym       = (char *)malloc(sizeof(char) * len + 1);

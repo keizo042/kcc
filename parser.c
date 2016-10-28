@@ -9,8 +9,8 @@ int parse_start(parser_state *);
 
 parser_state *parse(lex_state *lexer) {
     parser_state *parser = NULL;
-    parser = malloc(sizeof(parser_state));
-    parser->stream = lexer->head;
+    parser               = malloc(sizeof(parser_state));
+    parser->stream       = lexer->head;
     parse_start(parser);
     return parser;
 }
@@ -55,7 +55,4 @@ int parse_start(parser_state *state) {
     return 0;
 }
 
-int parse_binop(parser_state *state)
-{
-    return 0;
-}
+int parse_binop(parser_state *state) { return 0; }

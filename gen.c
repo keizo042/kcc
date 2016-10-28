@@ -4,4 +4,4 @@
 
 
 struct gen_info_s {};
-gen_info_t *gen(parser_state *state) { return NULL;}
+gen_info_t *gen(parser_state *state) { return NULL; }
