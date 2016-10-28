@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
     }
     generater = gen(parser);
     if (generater == NULL) {
+        printf("kcc generate: fail\n");
         return -1;
     }
     return 0;

@@ -20,13 +20,26 @@ typedef struct stmt_def_func_s stmt_def_func_t;
 typedef struct stmt_s stmt_t;
 typedef struct stmts_s stmts_t;
 
+#define UNIOP_UNDEF 0
+#define UNIOP_INCR 1
+#define UNIOP_DECR 2
 struct uniop_s {
-    char *op;
+    unsigned int op;
     char *value;
 };
 
+#define BINOP_UNDEF 0
+#define BINOP_PLUG 1
+#define BINOP_MINUS 2
+#define BINOP_MULTI 3
+#define BINOP_DIV 4
+#define BINOP_PLUSEQ 5
+#define BINOP_MINEQ 6
+#define BINOP_MULTIEQ 7
+#define BINOP_DIVEQ 8
+
 struct binop_s {
-    char *op;
+    unsigned int op;
     char *lvalue;
     char *rvalue;
 };
@@ -50,7 +63,11 @@ struct expr_def_struct_s {
     expr_def_var_t **vars;
 };
 
+#define EXPR_DEF_VAR 1
+#define EXPR_DEF_STRUCT 2
+
 struct expr_def_s {
+    type_tag_t typ;
     union {
         expr_def_var_t *var;
         expr_def_struct_t *srct;
@@ -64,13 +81,14 @@ struct expr_funcall_s {
 };
 
 
+#define EXPR_DEF 1
+#define EXPR_FUNCALL 2
 struct expr_s {
     type_tag_t t;
     union {
         char *sym;
         op_t op;
-        expr_def_var_t def_var;
-        expr_def_struct_t def_struct;
+        expr_def_t def;
         expr_funcall_t funcall;
     } data;
 };
@@ -111,6 +129,10 @@ struct stmt_def_func_s {
 };
 
 
+#define STMT_EXPRS 1
+#define STMT_IF 2
+#define STMT_WHILE 3
+#define STMT_FOR 4
 struct stmt_s {
     uint64_t id;
     union {

@@ -2,7 +2,7 @@ top=.
 CC=gcc
 src=gen.c kcc.c lex.c parser.c
 testdir=./test
-opt= -I$(top) -Wall -Wno-unused-function -g
+opt= -I$(top) -Wall -Werror -Wno-unused-function -g
 bin=$(top)/bin
 
 .PHONY: all  verbose ready alltest lex parser gen test clean

@@ -3,24 +3,25 @@
 #include "ast.h"
 #include "lex.h"
 
-#define AST_DIGIT
-#define AST_STRING
-#define AST_OP
-#define AST_UNIOP
-#define AST_BINOP
-#define AST_EXPRS
-#define AST_EXPR
-#define AST_EXPR_DEF
-#define AST_EXPR_DEF_VAR
-#define AST_EXPR_DEF_STRUCT
-#define AST_STMTS
-#define AST_STMT
-#define AST_STMT_FUNC
-#define AST_STMT_IF
-#define AST_STMT_WHILE
-#define AST_STMT_SWITCH_CASE
-#define AST_STMT_FOR
-#define AST_UNDEFINED
+#define AST_DIGIT 1
+#define AST_STRING 2
+#define AST_OP 3
+#define AST_UNIOP 4
+#define AST_BINOP 5
+#define AST_EXPRS 6 
+#define AST_EXPR 7
+#define AST_EXPR_DEF 8 
+#define AST_EXPR_DEF_VAR 9
+#define AST_EXPR_DEF_STRUCT 10
+#define AST_STMTS 11
+#define AST_STMT 12
+#define AST_STMT_FUNC 13
+#define AST_STMT_IF 14
+#define AST_STMT_WHILE 15
+#define AST_STMT_SWITCH_CASE 16
+#define AST_STMT_FOR 17
+#define AST_UNDEFINED 18
+
 
 typedef struct ast_s ast_t;
 struct ast_s {
@@ -31,8 +32,8 @@ struct ast_s {
         op_t op;
         uniop_t uniop;
         binop_t binop;
-        expr_t expr;
         exprs_t exprs;
+        expr_t expr;
         expr_def_var_t expr_def_var;
         expr_def_struct_t expr_def_struct;
         expr_def_t expr_def;
@@ -54,13 +55,16 @@ struct parser_stack_s {
     parser_stack_t *prev;
 };
 
+
 struct parser_state {
-    char *sym;
     lex_tok_stream_t *stream;
     parser_stack_t *stack;
     stmt_t *result;
     int err;
 };
 typedef struct parser_state parser_state;
+
+ast_t * parser_stack_pop(parser_state *);
+int * parser_stack_push(parser_state *, ast_t *);
 parser_state *parse(lex_state *);
 #endif
