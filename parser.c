@@ -179,3 +179,18 @@ int parse_uniop(parser_state *state) {
     }
     return 0;
 }
+
+
+int ast_pp(ast_t *ast)
+{
+    if(ast == NULL)
+    {
+        return -1;
+    }
+    switch(ast->typ)
+    {
+        default:
+            return -1;
+    }
+}
+

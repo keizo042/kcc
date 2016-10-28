@@ -67,4 +67,6 @@ typedef struct parser_state parser_state;
 ast_t * parser_stack_pop(parser_state *);
 int * parser_stack_push(parser_state *, ast_t *);
 parser_state *parse(lex_state *);
+
+int ast_pp(ast_t *);
 #endif
