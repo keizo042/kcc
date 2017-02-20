@@ -3,8 +3,6 @@
 tags
 TAGS
 *.o
-/test/test
-/test/*.o
-/test/*.out
-/test/*.dSYM/
+*.out
+*.gch
 .DS_Store

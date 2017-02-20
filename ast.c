@@ -5,18 +5,25 @@
 
 typedef int typ_t;
 
-#define NODE_UNDEFINED
-#define NODE_STMTS
-#define NODE_STMT
-#define NODE_EXPR
-#define NODE_TOKEN
+#define NODE_UNDEFINED 0
+#define NODE_STMT 
+#define NODE_STMT_IF
+#define NODE_STMT_WHILE 
+#define NODE_STMT_CASE
+#define NODE_EXPR 
 #define NODE_EXPR_BINOP
+#define NODE_EXPR_UNIOP
+#define NODE_EXPR_FUNCALL
+#define NODE_DECL
+#define NODE_DECL_VAR
+#define NODE_DECL_FUNC
+#define NODE_DECL_STRUCT
+#define NODE_TOKEN 
 
 #define TOKEN_STRING
 #define TOKEN_IDENT
 #define TOKEN_DIGIT
 #define TOKEN_DIGIT_INT
-#define TOKEN_DIGIT_FLOAT
 #define TOKEN_DIGIT_FLOAT
 
 typedef struct node_t {
