@@ -3,8 +3,18 @@
 
 struct lex_state;
 typedef struct lex_state lex_state;
-lex_state lex_init();
-int lex_state_set_src(lex_state, char*);
-int lex_state_run();
+
+typedef struct lex_state {
+        char *src;
+        int pos;
+        int width;
+        int len;
+        int line;
+        int err;
+
+}lex_state;
+
+lex_state* lex_init(char *src);
+int lex_state_run(lex_state *);
 int lex_state_error(lex_state*state);
 #endif // LEX_H

@@ -11,7 +11,7 @@ test:
 clean : buildclean testclean
 	
 buildclean:
-	rm -f *.o *.gch 
+	rm -f *.o *.gch  kcc
 
 testclean:
 	rm -f *.out 
