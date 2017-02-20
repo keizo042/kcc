@@ -16,8 +16,8 @@ typedef int typ_t;
 #define NODE_EXPR_FUNCALL
 #define NODE_DECL
 #define NODE_DECL_VAR
-#define NODE_DECL_FUNC
 #define NODE_DECL_STRUCT
+#define NODE_DECL_FUNC
 #define NODE_TOKEN 
 
 #define TOKEN_STRING
@@ -46,6 +46,15 @@ typedef struct expr_binop_t expr_binop_t;
 
 struct decl_t;
 typedef struct decl_t decl_t;
+
+struct decl_val_t;
+typedef struct decl_val_t decl_val_t;
+
+struct decl_struct_t;
+typedef struct decl_struct_t decl_struct_t;
+
+struct decl_func_t;
+typedef struct decl_func_t decl_func_t;
 
 struct node_t;
 typedef struct node_t node_t;
@@ -112,6 +121,12 @@ typedef struct decl_t {
 }decl_t;
 
 typedef struct decl_func_t {
+    typ_t decl_typ;
+    union {
+        decl_val_t *decl_val;
+        decl_struct_t *decl_struct;
+        decl_func_t *decl_func;
+    }body;
 }decl_func_t;
 
 typedef struct decl_val_t {
