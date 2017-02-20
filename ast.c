@@ -26,6 +26,30 @@ typedef int typ_t;
 #define TOKEN_DIGIT_INT
 #define TOKEN_DIGIT_FLOAT
 
+struct stmt_t;
+typedef struct stmt_t stmt_t;
+
+struct expr_t;
+typedef struct expr_t expr_t;
+
+struct expr_assign_t;
+typedef struct expr_assign_t expr_assign_t;
+
+struct expr_funcall_t;
+typedef struct expr_funcall_t expr_funcall_t;
+
+struct expr_uniop_t;
+typedef struct expr_uniop_t expr_uniop_t;
+
+struct expr_binop_t;
+typedef struct expr_binop_t expr_binop_t;
+
+struct decl_t;
+typedef struct decl_t decl_t;
+
+struct node_t;
+typedef struct node_t node_t;
+
 typedef struct node_t {
     typ_t node_typ;
     union {
@@ -39,7 +63,7 @@ typedef struct node_t {
 typedef struct stmt_t {
     expr_t *expr;
     stmt_t *stmt;
-}stmt;
+}stmt_t;
 
 typedef struct stmt_if_t {
     expr_t *exp1;
@@ -102,6 +126,6 @@ typedef struct token_t {
         char *str;
         int digit;
         char *ident;
-    }
+    };
 }token_t;
 
