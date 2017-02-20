@@ -2,12 +2,8 @@
 #include <stdlib.h>
 
 #include "ast.h"
+#include "gen.h"
 #include "lex.h"
 #include "parser.h"
-#include "gen.h"
 
-int
-main(int argc, char* argv[]) {
-    
-    return 0;
-}
+int main(int argc, char *argv[]) { return 0; }

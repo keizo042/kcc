@@ -5,7 +5,7 @@
 struct parser_state;
 typedef struct parser_state parser_state;
 
-parser_state *parser_state_init(lex_state*);
-int parser_state_run(parser_state*);
-int parser_state_error(parser_state*);
+parser_state *parser_state_init(lex_state *);
+int parser_state_run(parser_state *);
+int parser_state_error(parser_state *);
 #endif
