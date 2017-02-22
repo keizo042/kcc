@@ -31,6 +31,7 @@ typedef struct elem_t {
     ast_type_t node_typ;
     union {
         comment_t *comment;
+        node_t *node;
         stmt_t *stmt;
         stmt_if_t *stmt_if;
         stmt_while_t *stmt_while;
@@ -42,15 +43,41 @@ typedef struct elem_t {
         expr_uniop_t *expr_uniop;
 
         decl_t *decl;
-        decl_var_t * decl_var;
+        decl_var_t *decl_var;
         decl_struct_t *decl_struct;
         decl_func_t *decl_func;
+
+        token_t *token;
 
     } body;
 
 } elem_t;
 
-typedef struct parser_stack_t { parser_stack_t *prev; } parser_stack_t;
+typedef struct parser_stack_t {
+    parser_stack_t *prev;
+    elem_t *e;
+} parser_stack_t;
+
+static int parser_state_stack_push(parser_state *state, elem_t *e) {
+    parser_stack_t *s = malloc(sizeof(parser_stack_t));
+    s->e              = e;
+    s->prev           = state->stack;
+    state->stack      = s;
+    return 0;
+}
+
+static elem_t *parser_state_stack_pop(parser_state *state) {
+    elem_t *e;
+    parser_stack_t *s;
+    s = state->stack;
+    if (!s) {
+        return NULL;
+    }
+    e            = s->e;
+    state->stack = s->prev;
+    free(s);
+    return e;
+}
 
 static parser_state_status_t parser_state_machine(parser_state *state);
 
