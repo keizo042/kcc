@@ -13,7 +13,6 @@ typedef enum {
     LEX_TOKEN_DIGIT,
     LEX_TOKEN_PLUS,
     LEX_TOKEN_MINUS,
-    LEX_TOKEN_MULTI,
     LEX_TOKEN_DIV,
     LEX_TOKEN_MOD,
     LEX_TOKEN_END,
@@ -26,7 +25,7 @@ typedef enum {
     LEX_TOKEN_BRACE_R,
     LEX_TOKEN_TYPE,
     LEX_TOKEN_DOT,
-    LEX_TOKEN_PTR,
+    LEX_TOKEN_ASTRISK,
 } lex_token_typ_t;
 
 

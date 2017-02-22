@@ -34,10 +34,12 @@ lex_token_list_t *lex_token_list_init() {
 }
 
 lex_token_list_t *lex_token_list_update(lex_token_list_t *list, lex_token_t *token) {
-    lex_token_list_t *new_entry = lex_token_list_init();
-    new_entry->prev             = list;
-    new_entry->token            = token;
-    return new_entry;
+    lex_token_list_t *next_entry = lex_token_list_init();
+    list->token                  = token;
+
+    next_entry->prev = list;
+    list->next       = next_entry;
+    return next_entry;
 }
 
 lex_state *lex_state_init(char *src) {
@@ -51,11 +53,12 @@ lex_state *lex_state_init(char *src) {
     state->errmsg_len = 0;
     state->errmsg     = NULL;
     state->start      = lex_token_list_init();
+    state->tail       = state->start;
     return state;
 }
 
 int lex_state_run(lex_state *state) {
-    lex_state_status_t rc;
+    lex_state_status_t rc = LEX_CONTINUE;
 
     while (rc == LEX_CONTINUE) {
         rc = lex_text(state);
@@ -79,11 +82,10 @@ int lex_state_print(lex_state *state) {
 
     for (p = state->start; p != NULL; p = p->next) {
         char *buf = lex_token2string(p->token);
-        if(buf == NULL){
+        if (buf == NULL) {
             return 1;
         }
         printf("%s\n", buf);
-        free(p);
     }
     return 0;
 }
@@ -98,14 +100,16 @@ int lex_state_print(lex_state *state) {
 int lex_state_eof(lex_state *state) { return state->src[state->pos + state->len] == EOF; }
 
 lex_state_status_t lex_emit(lex_state *state, lex_token_typ_t typ) {
-    char *sym       = malloc(sizeof(char) * state->len + 1);
-    sym[state->len] = '\0';
+    char *sym               = (char *)malloc(sizeof(char) * state->len + 1);
+    lex_token_list_t *entry = NULL;
+    sym[state->len]         = '\0';
     strncpy(sym, state->src + state->pos, state->len);
 
     lex_token_t *token = lex_token_init(sym, typ, state->pos, state->line);
     state->pos         = state->pos + state->len;
     state->len         = 0;
-    state->tail        = lex_token_list_update(state->tail, token);
+    entry              = lex_token_list_update(state->tail, token);
+    state->tail        = entry;
     return LEX_CONTINUE;
 }
 
@@ -157,6 +161,15 @@ lex_state_status_t lex_text(lex_state *state) {
     case '\t':
         lex_state_pos_incr(state);
         return LEX_CONTINUE;
+    case '+':
+        lex_state_incr(state);
+        return lex_emit(state, LEX_TOKEN_PLUS);
+    case '-':
+        lex_state_incr(state);
+        return lex_emit(state, LEX_TOKEN_MINUS);
+    case '/':
+        lex_state_incr(state);
+        return lex_emit(state, LEX_TOKEN_DIV);
     case '"':
         return lex_string(state);
     default:
@@ -180,11 +193,10 @@ lex_state_status_t lex_digit(lex_state *state) {
             lex_state_incr(state);
             continue;
         } else {
-            lex_state_decr(state);
             break;
         }
     }
-    return LEX_CONTINUE;
+    return lex_emit(state, LEX_TOKEN_DIGIT);
 }
 
 lex_state_status_t lex_ident(lex_state *state) {
@@ -225,7 +237,14 @@ lex_state_status_t lex_string(lex_state *state) {
 
 
 
-// debug purpose
+//
+//
+//
+// **** functions for debug purpose ***
+//
+//
+//
+
 char *lex_token_typ2string(lex_token_typ_t typ) {
     switch (typ) {
     case LEX_TOKEN_UNDEFINED:
@@ -242,8 +261,6 @@ char *lex_token_typ2string(lex_token_typ_t typ) {
         return "PLUS";
     case LEX_TOKEN_MINUS:
         return "MINUS";
-    case LEX_TOKEN_MULTI:
-        return "MULTI";
     case LEX_TOKEN_DIV:
         return "DIV";
     case LEX_TOKEN_MOD:
@@ -268,8 +285,8 @@ char *lex_token_typ2string(lex_token_typ_t typ) {
         return "TYPE";
     case LEX_TOKEN_DOT:
         return "DOT";
-    case LEX_TOKEN_PTR:
-        return "PTR";
+    case LEX_TOKEN_ASTRISK:
+        return "ASTRISK";
     default:
         return NULL;
     }
@@ -279,12 +296,7 @@ char *lex_token2string(lex_token_t *token) {
     if (token == NULL) {
         return NULL;
     }
-    int n     = 0;
-    char *typ = lex_token_typ2string(token->typ);
-    if (typ != NULL) {
-        n = strlen(typ);
-    }
-    char *buf = (char *)malloc(n + 256);
-    sprintf(buf, "{%s:%s, pos:%d,line:%d}", typ, token->sym, token->pos, token->line);
+    char *buf = (char *)malloc(256);
+    sprintf(buf, "{%d:%s, pos:%d,line:%d}", token->typ, token->sym, token->pos, token->line);
     return buf;
 }

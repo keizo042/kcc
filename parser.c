@@ -6,5 +6,15 @@ parser_state *parser_state_init(lex_state *lexer) {
     return state;
 }
 
-int parser_state_run(parser_state *state) { return 1; }
-const char *parser_state_error(parser_state *parser) { return ""; }
+int parser_state_run(parser_state *state) {
+    state->err    = 1;
+    state->errmsg = "not yet implemented";
+    return state->err;
+}
+const char *parser_state_error(parser_state *state) {
+    if (state->err) {
+        return state->errmsg;
+    } else {
+        return "success";
+    }
+}

@@ -6,6 +6,10 @@ struct parser_state;
 typedef struct parser_state parser_state;
 
 typedef struct parser_state {
+        lex_token_list_t *stream;
+        lex_token_list_t *start;
+        int err;
+        char* errmsg;
 } parser_state;
 
 parser_state *parser_state_init(lex_state *);

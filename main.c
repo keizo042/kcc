@@ -9,7 +9,7 @@
 int main(int argc, char *argv[]) {
     int rc;
 
-    lex_state *lexer = lex_state_init("1 + 1");
+    lex_state *lexer = lex_state_init("1 + 2");
     rc               = lex_state_run(lexer);
     if (rc) {
         fprintf(stderr, "lex:%s\n", lex_state_error(lexer));
