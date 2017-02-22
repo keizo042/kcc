@@ -3,27 +3,32 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-typedef int32_t typ_t;
 
-#define NODE_UNDEFINED 0
-#define NODE_STMT 0x01
-#define NODE_STMT_IF 0x02
-#define NODE_STMT_WHILE 0x03
-#define NODE_STMT_CASE 0x04
-#define NODE_EXPR 0x05
-#define NODE_EXPR_BINOP 0x06
-#define NODE_EXPR_UNIOP 0x07
-#define NODE_EXPR_FUNCALL 0x08
-#define NODE_DECL 0x09
-#define NODE_DECL_VAR 0x0a
-#define NODE_DECL_STRUCT 0x0b
-#define NODE_DECL_FUNC 0x0c
-#define NODE_TOKEN 0x0d
+typedef enum {
+    AST_UNDEFINED,
 
-#define TOKEN_UNDEFINED 0
-#define TOKEN_STRING 0x01
-#define TOKEN_IDENT 0x02
-#define TOKEN_DIGIT_ 0x03
+    AST_COMMENT,
+
+    AST_NODE,
+    AST_STMT,
+    AST_STMT_IF,
+    AST_STMT_WHILE,
+    AST_STMT_CASE,
+
+    AST_EXPR,
+    AST_EXPR_BINOP,
+    AST_EXPR_UNIOP,
+    AST_EXPR_FUNCALL,
+    AST_DECL,
+    AST_DECL_VAR,
+    AST_DECL_STRUCT,
+    AST_DECL_FUNC,
+    AST_TOKEN,
+    AST_TOKEN_UNDEFINED,
+    AST_TOKEN_STRING,
+    AST_TOKEN_IDENT,
+    AST_TOKEN_DIGIT,
+} ast_type_t;
 
 struct comment_t;
 typedef struct comment_t comment_t;
@@ -64,7 +69,7 @@ typedef struct node_t node_t;
 typedef struct comment_t { char *text; } comment_t;
 
 typedef struct node_t {
-    typ_t node_typ;
+    ast_type_t node_typ;
     union {
         stmt_t *stmt;
         expr_t *expr;
@@ -94,7 +99,7 @@ typedef struct stmt_while_t {
 } stmt_while_t;
 
 typedef struct expr_t {
-    typ_t expr_typ;
+    ast_type_t expr_typ;
     union {
         expr_binop_t *binop;
         expr_uniop_t *uniop;
@@ -125,7 +130,7 @@ typedef struct decl_t {
 } decl_t;
 
 typedef struct decl_func_t {
-    typ_t decl_typ;
+    ast_type_t decl_typ;
     union {
         decl_val_t *decl_val;
         decl_struct_t *decl_struct;
@@ -140,7 +145,7 @@ typedef struct decl_struct_t {
 } decl_struct_t;
 
 typedef struct token_t {
-    typ_t token_typ;
+    ast_type_t token_typ;
     union {
         char *str;
         int digit;
