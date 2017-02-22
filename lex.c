@@ -42,6 +42,15 @@ lex_token_list_t *lex_token_list_update(lex_token_list_t *list, lex_token_t *tok
     return next_entry;
 }
 
+int lex_token_list_succ(lex_token_list_t *list, lex_token_t *token) {
+    lex_token_list_t *t = NULL;
+
+    token = list->token;
+    t     = list;
+    list  = list->next;
+    return 0;
+}
+
 lex_state *lex_state_init(char *src) {
     lex_state *state  = (lex_state *)malloc(sizeof(lex_state));
     state->src        = src;
@@ -161,6 +170,9 @@ lex_state_status_t lex_text(lex_state *state) {
     case '\t':
         lex_state_pos_incr(state);
         return LEX_CONTINUE;
+    case ';':
+        lex_state_incr(state);
+        return lex_emit(state, LEX_TOKEN_END);
     case '+':
         lex_state_incr(state);
         return lex_emit(state, LEX_TOKEN_PLUS);

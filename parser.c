@@ -133,8 +133,13 @@ static parser_state_status_t state_machine_decl_var(parser_state *);
 static parser_state_status_t state_machine_decl_func(parser_state *);
 
 static parser_state_status_t parser_state_machine(parser_state *state) {
-    switch (state->stream->token->typ) {
+    elem_t *e = malloc(sizeof(elem_t));
+    lex_token_t *token;
+    int rc;
+    rc = lex_token_list_succ(state->stream, token);
+    switch (token->typ) {
     case LEX_TOKEN_DIGIT:
+
     case LEX_TOKEN_STRING:
     case LEX_TOKEN_IDENT:
         return PARSE_ERROR;
@@ -145,6 +150,8 @@ static parser_state_status_t parser_state_machine(parser_state *state) {
     }
 }
 
+static parser_state_status_t state_machine_expr_binop(parser_state *) ;
+static parser_state_status_t state_machine_expr_binop2(parser_state *); // * or /
 
 
 ///

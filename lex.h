@@ -74,6 +74,8 @@ lex_state *lex_state_init(char *src);
 int lex_state_run(lex_state *);
 const char *lex_state_error(lex_state *state);
 int lex_state_print(lex_state *);
+
+int lex_token_list_succ(lex_token_list_t *list, lex_token_t *token) ;
 char *lex_token_typ2string(lex_token_typ_t typ);
 char *lex_token2string(lex_token_t *token);
 #endif // LEX_H
