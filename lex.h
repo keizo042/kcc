@@ -25,7 +25,6 @@ typedef enum {
     LEX_TOKEN_PTR,
 } lex_token_typ_t;
 
-typedef int lex_typ_t;
 
 struct lex_token_t;
 typedef struct lex_token_t lex_token_t;
@@ -53,10 +52,9 @@ typedef struct lex_state {
 
 typedef struct lex_token_t {
     char *sym;
-    lex_typ_t typ;
+    lex_token_typ_t typ;
 
     int pos;
-    int len;
     int line;
 } lex_token_t;
 
