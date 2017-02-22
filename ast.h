@@ -54,8 +54,8 @@ typedef struct expr_binop_t expr_binop_t;
 struct decl_t;
 typedef struct decl_t decl_t;
 
-struct decl_val_t;
-typedef struct decl_val_t decl_val_t;
+struct decl_var_t;
+typedef struct decl_var_t decl_var_t;
 
 struct decl_struct_t;
 typedef struct decl_struct_t decl_struct_t;
@@ -132,14 +132,14 @@ typedef struct decl_t {
 typedef struct decl_func_t {
     ast_type_t decl_typ;
     union {
-        decl_val_t *decl_val;
+        decl_var_t *decl_var;
         decl_struct_t *decl_struct;
         decl_func_t *decl_func;
     } body;
 } decl_func_t;
 
-typedef struct decl_val_t {
-} decl_val_t;
+typedef struct decl_var_t {
+} decl_var_t;
 
 typedef struct decl_struct_t {
 } decl_struct_t;
