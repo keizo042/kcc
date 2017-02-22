@@ -75,10 +75,17 @@ const char *lex_state_error(lex_state *state) {
 
 int lex_state_print(lex_state *state) {
     lex_token_list_t *p;
+    char *buf;
 
     for (p = state->start; p != NULL; p = p->next) {
-        printf("%s\n", lex_token2string(p->token));
+        char *buf = lex_token2string(p->token);
+        if(buf == NULL){
+            return 1;
+        }
+        printf("%s\n", buf);
+        free(p);
     }
+    return 0;
 }
 
 //
@@ -264,14 +271,20 @@ char *lex_token_typ2string(lex_token_typ_t typ) {
     case LEX_TOKEN_PTR:
         return "PTR";
     default:
-        return "";
+        return NULL;
     }
 }
 
 char *lex_token2string(lex_token_t *token) {
+    if (token == NULL) {
+        return NULL;
+    }
+    int n     = 0;
     char *typ = lex_token_typ2string(token->typ);
-    char *buf = malloc(strlen(typ) + 256);
+    if (typ != NULL) {
+        n = strlen(typ);
+    }
+    char *buf = (char *)malloc(n + 256);
     sprintf(buf, "{%s:%s, pos:%d,line:%d}", typ, token->sym, token->pos, token->line);
-    free(typ);
     return buf;
 }
