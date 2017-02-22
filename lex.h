@@ -23,7 +23,7 @@ typedef enum {
     LEX_TOKEN_TYPE,
     LEX_TOKEN_DOT,
     LEX_TOKEN_PTR,
-}lex_token_typ_t;
+} lex_token_typ_t;
 
 typedef int lex_typ_t;
 
@@ -45,28 +45,28 @@ typedef struct lex_state {
     int err;
     int errmsg_len;
     char *errmsg;
-    
+
     lex_token_list_t *start;
     lex_token_list_t *tail;
 
 } lex_state;
 
 typedef struct lex_token_t {
-        char *sym;
-        lex_typ_t typ;
+    char *sym;
+    lex_typ_t typ;
 
-        int pos;
-        int len;
-        int line;
-}lex_token_t;
+    int pos;
+    int len;
+    int line;
+} lex_token_t;
 
 typedef struct lex_token_list_t {
-        lex_token_list_t *prev;
-        lex_token_t *token;
-        lex_token_list_t *next;
-}lex_token_list_t;
+    lex_token_list_t *prev;
+    lex_token_t *token;
+    lex_token_list_t *next;
+} lex_token_list_t;
 
 lex_state *lex_state_init(char *src);
 int lex_state_run(lex_state *);
-const char* lex_state_error(lex_state *state);
+const char *lex_state_error(lex_state *state);
 #endif // LEX_H
