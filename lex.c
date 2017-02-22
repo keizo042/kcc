@@ -7,14 +7,14 @@
 #define LEX_CONTINUE 1
 #define LEX_ERROR 2
 
-lex_state *lex_init(char *src) {
+lex_state *lex_state_init(char *src) {
     lex_state *state = (lex_state *)malloc(sizeof(lex_state));
     return state;
 }
 
-int lex_state_run(lex_state *state) { return 0; }
+int lex_state_run(lex_state *state) { return 1; }
 
-int lex_state_error(lex_state *state) { return state->err; }
+const char* lex_state_error(lex_state *state) { return state->errmsg; }
 
 int lex_state_eof(lex_state *state){return 0;}
 

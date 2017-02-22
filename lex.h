@@ -43,6 +43,8 @@ typedef struct lex_state {
     int len;
     int line;
     int err;
+    int errmsg_len;
+    char *errmsg;
     
     lex_token_list_t *start;
     lex_token_list_t *tail;
@@ -64,7 +66,7 @@ typedef struct lex_token_list_t {
         lex_token_list_t *next;
 }lex_token_list_t;
 
-lex_state *lex_init(char *src);
+lex_state *lex_state_init(char *src);
 int lex_state_run(lex_state *);
-int lex_state_error(lex_state *state);
+const char* lex_state_error(lex_state *state);
 #endif // LEX_H

@@ -11,8 +11,13 @@ gen_info_t *gen_info_init(parser_state *state){
 }
 
 int gen_info_run(gen_info_t* info){
+    return 1;
 }
 
-int gen_info_error(gen_info_t *info){
-    return 0;
+const char* gen_info_error(gen_info_t *info){
+    return "";
+}
+
+int gen_info_print(gen_info_t *info){
+    return 1;
 }
