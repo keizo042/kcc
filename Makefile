@@ -1,12 +1,13 @@
-
+projroot=$(dirname $0)
 .PHONY: all test buildclean testclean
 
-all: ast.c ast.h lex.c lex.h parser.c parser.h gen.c gen.h main.c 
-	gcc -c ast.c ast.h lex.c lex.h parser.c parser.h gen.c gen.h main.c 
-	gcc *.o -o kcc
+all: ast.c lex.c parser.c gen.c main.c ast.h lex.h parser.h gen.h
+	gcc -I. -c ast.c lex.c parser.c gen.c main.c
+	gcc -I. *.o -o kcc
 
 
 test: 
+	echo "test"
 
 clean : buildclean testclean
 	
