@@ -1,6 +1,10 @@
 #ifndef LEX_H
 #define LEX_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 typedef enum {
     LEX_TOKEN_UNDEFINED,
     LEX_TOKEN_ERROR,
@@ -24,6 +28,7 @@ typedef enum {
     LEX_TOKEN_DOT,
     LEX_TOKEN_PTR,
 } lex_token_typ_t;
+
 
 
 struct lex_token_t;
@@ -58,6 +63,7 @@ typedef struct lex_token_t {
     int line;
 } lex_token_t;
 
+
 typedef struct lex_token_list_t {
     lex_token_list_t *prev;
     lex_token_t *token;
@@ -67,4 +73,7 @@ typedef struct lex_token_list_t {
 lex_state *lex_state_init(char *src);
 int lex_state_run(lex_state *);
 const char *lex_state_error(lex_state *state);
+int lex_state_print(lex_state *);
+char *lex_token_typ2string(lex_token_typ_t typ);
+char *lex_token2string(lex_token_t *token);
 #endif // LEX_H

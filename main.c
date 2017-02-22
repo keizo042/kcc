@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "lex:%s\n", lex_state_error(lexer));
         return 1;
     }
+    lex_state_print(lexer);
 
     parser_state *parser = parser_state_init(lexer);
     rc                   = parser_state_run(parser);
