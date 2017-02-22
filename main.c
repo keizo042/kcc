@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "parse:%s\n", parser_state_error(parser));
         return 2;
     }
+    parser_state_print(parser);
 
     gen_info_t *gen = gen_info_init(parser);
     rc              = gen_info_run(gen);
