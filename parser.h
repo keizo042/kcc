@@ -5,9 +5,15 @@
 struct parser_state;
 typedef struct parser_state parser_state;
 
+struct parser_stack_t;
+typedef struct parser_stack_t parser_stack_t;
+
 typedef struct parser_state {
         lex_token_list_t *stream;
         lex_token_list_t *start;
+        parser_stack_t *stack;
+        int stack_size;
+
         int err;
         char* errmsg;
 } parser_state;
