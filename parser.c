@@ -150,8 +150,21 @@ static parser_state_status_t parser_state_machine(parser_state *state) {
     }
 }
 
-static parser_state_status_t state_machine_expr_binop(parser_state *) ;
-static parser_state_status_t state_machine_expr_binop2(parser_state *); // * or /
+static parser_state_status_t state_machine_expr_binop(parser_state *state) {
+    elem *lv, *rv;
+    lex_token_t *token;
+    lex_token_list_succ(state->stream, token);
+    switch(token->typ){
+        case LEX_TOKEN_PLUS:
+        case LEX_TOKEN_MINUS:
+    }
+    
+    retunr PARSE_CONTINUE;
+}
+static parser_state_status_t state_machine_expr_binop2(parser_state *state) { 
+    elem_t *lv, *rv; 
+    return  PARSE_CONTINUE;
+}
 
 
 ///
