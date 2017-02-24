@@ -1,3 +1,5 @@
 language: c
 compiler:
     - clang -std=c99
+script: 
+    - make test

@@ -181,11 +181,14 @@ static elem_t *parser_state_machine_stack_pop(parser_state_machine_t *state) {
 //
 //
 
+// stmt
 static parser_state_machine_status_t parser_state_machine_stmts(parser_state_machine_t *);
+
 static parser_state_machine_status_t parser_state_machine_stmt(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_stmt_if(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_stmt_while(parser_state_machine_t *);
 
+// expr
 static parser_state_machine_status_t parser_state_machine_expr(parser_state_machine_t *);
 static parser_state_machine_status_t
 parser_state_machine_expr_binop_e(parser_state_machine_t *); // + or -
@@ -195,11 +198,13 @@ static parser_state_machine_status_t parser_state_machine_expr_uniop(parser_stat
 static parser_state_machine_status_t
 parser_state_machine_expr_funcall(parser_state_machine_t *status);
 
+// decl
 static parser_state_machine_status_t parser_state_machine_decl(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_decl_struct(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_decl_var(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_decl_func(parser_state_machine_t *);
 
+// loop point
 static parser_state_machine_status_t parser_state_machine(parser_state_machine_t *state) {
     switch (state->status) {
     case PARSE_BEFORE:
