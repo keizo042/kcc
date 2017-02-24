@@ -1,9 +1,9 @@
-#include "parser.h"
-#include "ast.h"
-#include "lex.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ast.h"
+#include "lex.h"
+#include "parser.h"
 
 typedef enum {
     PARSE_BEFORE,
@@ -37,7 +37,14 @@ typedef struct parser_state_machine_stack_t parser_state_machine_stack_t;
 struct parser_state_machine_t;
 typedef struct parser_state_machine_t parser_state_machine_t;
 
+//
+//
+//
 // * internal main parser state *//
+//
+//
+//
+
 
 typedef struct parser_state_machine_t {
     parser_state_machine_stack_t *stack;
@@ -45,8 +52,65 @@ typedef struct parser_state_machine_t {
 
     parser_state_machine_status_t status;
     parser_state *parser;
+
+    lex_token_list_t *prev;
+    lex_token_list_t *peek;
 } parser_state_machine_t;
 
+//
+//
+//
+/* export api function */
+//
+//
+//
+
+static parser_state_machine_t *parser_state_machine_init(parser_state *parser) {
+    parser_state_machine_t *state = malloc(sizeof(parser_state_machine_t));
+    state->status                 = PARSE_BEFORE;
+    state->stack                  = NULL;
+    state->stack_size             = 0;
+
+    state->parser = parser;
+    state->prev   = NULL;
+    state->peek   = parser->start;
+    return state;
+}
+
+
+parser_state *parser_state_init(lex_state *lexer) {
+    parser_state *state = (parser_state *)malloc(sizeof(parser_state));
+    state->start        = lexer->start;
+    state->stream       = state->start;
+    state->errmsg       = NULL;
+    state->err          = 0;
+    return state;
+}
+
+//
+// all we need internal api is.  parser state machine runner
+//
+static parser_state_machine_status_t parser_state_machine(parser_state_machine_t *state);
+
+// parser_state_run() handle internal state, and run it.
+int parser_state_run(parser_state *parser) {
+    parser_state_machine_status_t rc = PARSE_ERROR;
+    parser_state_machine_t *state    = parser_state_machine_init(parser);
+
+    rc = parser_state_machine(state);
+    if (rc == PARSE_ERROR) {
+        return 1;
+    }
+    return 0;
+}
+
+const char *parser_state_error(parser_state *state) {
+    if (state->err) {
+        return state->errmsg;
+    } else {
+        return "success";
+    }
+}
 
 
 //
@@ -86,9 +150,9 @@ typedef struct parser_state_machine_stack_t {
 
 static int parser_state_machine_stack_push(parser_state_machine_t *state, elem_t *e) {
     parser_state_machine_stack_t *s = malloc(sizeof(parser_state_machine_stack_t));
-    s->e                     = e;
-    s->prev                  = state->stack;
-    state->stack             = s;
+    s->e                            = e;
+    s->prev                         = state->stack;
+    state->stack                    = s;
     return 0;
 }
 
@@ -109,46 +173,6 @@ static elem_t *parser_state_machine_stack_pop(parser_state_machine_t *state) {
 
 
 
-
-
-static parser_state_machine_t *parser_state_machine_init(parser_state *parser) {
-    parser_state_machine_t *state = malloc(sizeof(parser_state_machine_t));
-    state->status                 = PARSE_BEFORE;
-    state->stack                  = NULL;
-    state->stack_size             = 0;
-    state->parser                 = parser;
-    return state;
-}
-
-static parser_state_machine_status_t parser_state_machine(parser_state_machine_t *state);
-
-parser_state *parser_state_init(lex_state *lexer) {
-    parser_state *state = (parser_state *)malloc(sizeof(parser_state));
-    state->start        = lexer->start;
-    state->stream       = state->start;
-    state->errmsg       = NULL;
-    state->err          = 0;
-    return state;
-}
-
-int parser_state_run(parser_state *parser) {
-    parser_state_machine_status_t rc     = PARSE_ERROR;
-    parser_state_machine_t *state = parser_state_machine_init(parser);
-
-    rc = parser_state_machine(state);
-    if (rc == PARSE_ERROR) {
-        return 1;
-    }
-    return 0;
-}
-const char *parser_state_error(parser_state *state) {
-    if (state->err) {
-        return state->errmsg;
-    } else {
-        return "success";
-    }
-}
-
 //
 //
 //
@@ -162,6 +186,7 @@ static parser_state_machine_status_t parser_state_machine_stmt(parser_state_mach
 static parser_state_machine_status_t parser_state_machine_stmt_if(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_stmt_while(parser_state_machine_t *);
 
+static parser_state_machine_status_t parser_state_machine_expr(parser_state_machine_t *);
 static parser_state_machine_status_t
 parser_state_machine_expr_binop_e(parser_state_machine_t *); // + or -
 static parser_state_machine_status_t
@@ -170,6 +195,7 @@ static parser_state_machine_status_t parser_state_machine_expr_uniop(parser_stat
 static parser_state_machine_status_t
 parser_state_machine_expr_funcall(parser_state_machine_t *status);
 
+static parser_state_machine_status_t parser_state_machine_decl(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_decl_struct(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_decl_var(parser_state_machine_t *);
 static parser_state_machine_status_t parser_state_machine_decl_func(parser_state_machine_t *);
@@ -180,6 +206,7 @@ static parser_state_machine_status_t parser_state_machine(parser_state_machine_t
         return parser_state_machine_stmts(state);
     case PARSE_STMT:
     case PARSE_EXPR:
+        return parser_state_machine_expr(state);
     case PARSE_EXPR_BINOP:
         return parser_state_machine_expr_binop_e(state);
     case PARSE_EXPR_BINOP_PLUS_OR_MINUS:
@@ -194,22 +221,76 @@ static parser_state_machine_status_t parser_state_machine(parser_state_machine_t
     }
 }
 
-static parser_state_machine_status_t parser_state_machine_stmts(parser_state_machine_t *state){return PARSE_ERROR;}
-static parser_state_machine_status_t parser_state_machine_stmt(parser_state_machine_t *state){return PARSE_ERROR;}
-static parser_state_machine_status_t parser_state_machine_stmt_if(parser_state_machine_t *state){return PARSE_ERROR;}
-static parser_state_machine_status_t parser_state_machine_stmt_while(parser_state_machine_t *state){return PARSE_ERROR;}
+static parser_state_machine_status_t parser_state_machine_stmts(parser_state_machine_t *state) {
+    lex_token_t *token = NULL;
+    lex_token_list_get(state->peek, token);
+    if (!token) {
+        return PARSE_ERROR;
+    }
+    switch (token->typ) {
+    case LEX_TOKEN_DIGIT:
+    case LEX_TOKEN_TYPE:
+        return parser_state_machine_decl(state);
+    case LEX_TOKEN_KEYWORD:
+    default:
+        break;
+    }
+    return PARSE_STMTS;
+}
+static parser_state_machine_status_t parser_state_machine_stmt(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
+static parser_state_machine_status_t parser_state_machine_stmt_if(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
+static parser_state_machine_status_t
+parser_state_machine_stmt_while(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
+
+static parser_state_machine_status_t parser_state_machine_expr(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
 
 static parser_state_machine_status_t
-parser_state_machine_expr_binop_e(parser_state_machine_t *state){return PARSE_ERROR;}
+parser_state_machine_expr_binop_e(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
 static parser_state_machine_status_t
-parser_state_machine_expr_binop_t(parser_state_machine_t *state){return PARSE_ERROR;}
-static parser_state_machine_status_t parser_state_machine_expr_uniop(parser_state_machine_t *state){return PARSE_ERROR;}
+parser_state_machine_expr_binop_t(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
 static parser_state_machine_status_t
-parser_state_machine_expr_funcall(parser_state_machine_t *status){return PARSE_ERROR;}
+parser_state_machine_expr_uniop(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
+static parser_state_machine_status_t
+parser_state_machine_expr_funcall(parser_state_machine_t *status) {
+    return PARSE_ERROR;
+}
 
-static parser_state_machine_status_t parser_state_machine_decl_struct(parser_state_machine_t *state){return PARSE_ERROR;}
-static parser_state_machine_status_t parser_state_machine_decl_var(parser_state_machine_t *state){return PARSE_ERROR;}
-static parser_state_machine_status_t parser_state_machine_decl_func(parser_state_machine_t *state){return PARSE_ERROR;}
+static parser_state_machine_status_t parser_state_machine_decl(parser_state_machine_t *state) {
+    lex_token_t *token = NULL;
+    lex_token_list_get(state->peek, token);
+    if (!token) {
+        return PARSE_ERROR;
+    }
+
+    switch (token->typ) {
+    default:
+        return PARSE_ERROR;
+    }
+}
+static parser_state_machine_status_t
+parser_state_machine_decl_struct(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
+static parser_state_machine_status_t parser_state_machine_decl_var(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
+static parser_state_machine_status_t parser_state_machine_decl_func(parser_state_machine_t *state) {
+    return PARSE_ERROR;
+}
 
 
 ///

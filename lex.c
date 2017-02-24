@@ -53,12 +53,10 @@ int lex_token_list_get(lex_token_list_t *list, lex_token_t *token) {
     }
 }
 
-int lex_token_list_succ(lex_token_list_t *list, lex_token_t *token) {
+int lex_token_list_succ(lex_token_list_t *list) {
     lex_token_list_t *t = NULL;
-
-    token = list->token;
-    t     = list;
-    list  = list->next;
+    t                   = list;
+    list                = list->next;
     return 0;
 }
 
