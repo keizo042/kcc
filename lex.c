@@ -9,37 +9,48 @@ typedef enum {
     LEX_ERROR,
 } lex_state_status_t;
 
-lex_state_status_t lex_text(lex_state *);
-lex_state_status_t lex_string(lex_state *);
-lex_state_status_t lex_ident(lex_state *);
-lex_state_status_t lex_digit(lex_state *);
+static lex_state_status_t lex_text(lex_state *);
+static lex_state_status_t lex_string(lex_state *);
+static lex_state_status_t lex_ident(lex_state *);
+static lex_state_status_t lex_digit(lex_state *);
 
-lex_token_t *lex_token_init(char *sym, lex_token_typ_t typ, int pos, int line) {
+static lex_token_t *lex_token_init(char *sym, lex_token_typ_t typ, int pos, int line) {
     lex_token_t *token = malloc(sizeof(lex_token_t));
-    token->sym         = sym;
-    token->typ         = typ;
-    token->pos         = pos;
-    token->line        = line;
+
+    token->sym  = sym;
+    token->typ  = typ;
+    token->pos  = pos;
+    token->line = line;
 
     return token;
 }
 
 
-lex_token_list_t *lex_token_list_init() {
+static lex_token_list_t *lex_token_list_init() {
     lex_token_list_t *list = (lex_token_list_t *)malloc(sizeof(lex_token_list_t));
-    list->prev             = NULL;
-    list->token            = NULL;
-    list->next             = NULL;
+
+    list->prev  = NULL;
+    list->token = NULL;
+    list->next  = NULL;
     return list;
 }
 
-lex_token_list_t *lex_token_list_update(lex_token_list_t *list, lex_token_t *token) {
+static lex_token_list_t *lex_token_list_update(lex_token_list_t *list, lex_token_t *token) {
     lex_token_list_t *next_entry = lex_token_list_init();
-    list->token                  = token;
 
+    list->token      = token;
     next_entry->prev = list;
     list->next       = next_entry;
     return next_entry;
+}
+
+int lex_token_list_get(lex_token_list_t *list, lex_token_t *token) {
+    token = list->token;
+    if (token) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 int lex_token_list_succ(lex_token_list_t *list, lex_token_t *token) {
@@ -106,9 +117,9 @@ int lex_state_print(lex_state *state) {
 //
 
 
-int lex_state_eof(lex_state *state) { return state->src[state->pos + state->len] == EOF; }
+static int lex_state_eof(lex_state *state) { return state->src[state->pos + state->len] == EOF; }
 
-lex_state_status_t lex_emit(lex_state *state, lex_token_typ_t typ) {
+static lex_state_status_t lex_emit(lex_state *state, lex_token_typ_t typ) {
     char *sym               = (char *)malloc(sizeof(char) * state->len + 1);
     lex_token_list_t *entry = NULL;
     sym[state->len]         = '\0';
@@ -122,11 +133,11 @@ lex_state_status_t lex_emit(lex_state *state, lex_token_typ_t typ) {
     return LEX_CONTINUE;
 }
 
-char lex_state_pos_incr(lex_state *state) {
+static char lex_state_pos_incr(lex_state *state) {
     state->pos++;
     return state->src[state->pos + state->len];
 }
-char lex_state_pos_decr(lex_state *state) {
+static char lex_state_pos_decr(lex_state *state) {
     state->pos--;
     if (state->pos <= 0) {
         char *msg         = "invalid negative access to src code";
@@ -138,12 +149,12 @@ char lex_state_pos_decr(lex_state *state) {
     return state->src[state->pos + state->len];
 }
 
-char lex_state_incr(lex_state *state) {
+static char lex_state_incr(lex_state *state) {
     state->len++;
     return state->src[state->pos + state->len];
 }
 
-char lex_state_decr(lex_state *state) {
+static char lex_state_decr(lex_state *state) {
     state->len--;
     if (state->pos <= 0) {
         char *msg         = "invalid negative access to src code";
@@ -156,10 +167,10 @@ char lex_state_decr(lex_state *state) {
 }
 
 
-char lex_state_peek(lex_state *state) { return state->src[state->pos + state->len]; }
+static char lex_state_peek(lex_state *state) { return state->src[state->pos + state->len]; }
 
 
-lex_state_status_t lex_text(lex_state *state) {
+static lex_state_status_t lex_text(lex_state *state) {
     switch (lex_state_peek(state)) {
     case '\0':
         lex_emit(state, LEX_TOKEN_EOF);
@@ -194,7 +205,7 @@ lex_state_status_t lex_text(lex_state *state) {
 #define ISCHAR(x) ('a' <= (x) && (x) <= 'z') || ('A' <= (x) && (x) <= 'Z')
 #define ISIDENT(x) ISDIGIT(x) || ISCHAR(x)
 
-lex_state_status_t lex_digit(lex_state *state) {
+static lex_state_status_t lex_digit(lex_state *state) {
     char c;
     while (1) {
         c = lex_state_peek(state);
@@ -211,7 +222,7 @@ lex_state_status_t lex_digit(lex_state *state) {
     return lex_emit(state, LEX_TOKEN_DIGIT);
 }
 
-lex_state_status_t lex_ident(lex_state *state) {
+static lex_state_status_t lex_ident(lex_state *state) {
     char c;
     c = lex_state_peek(state);
     if (ISDIGIT(c)) {
@@ -233,7 +244,7 @@ lex_state_status_t lex_ident(lex_state *state) {
 }
 
 
-lex_state_status_t lex_string(lex_state *state) {
+static lex_state_status_t lex_string(lex_state *state) {
     char c;
     if (lex_state_peek(state) != '"') {
         return LEX_ERROR;
