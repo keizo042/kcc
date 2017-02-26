@@ -5,6 +5,44 @@
 #include "lex.h"
 #include "parser.h"
 
+/*
+
+   . STMTS = STMTS;STMTS
+   . STMTS = STMT
+   . STMTS = EXPR
+   . STMTS = DECL
+
+   . STMT = STMT_IF
+   . STMT = STMT_WHILE
+   . STMT = STMT_SWITCH_CASE
+
+   . STMT_IF = if PAREN_L EXPR '(' BRACE_L STMT ')' else '{' STMT '{'
+   . STMT_WHILE = while ( EXPR ) '{' STMT '}'
+   . STMT_SWITCH_CASE = undefined
+
+   . EXPR = EXPR_BINOP
+   . EXPR = EXPR_UNIOP
+   . EXPR = EXPR_FUNCALL
+   
+
+   . DECL = DECL_VAR
+   . DECL = DECL_STRUCT
+   . DECL = DECL_FUNC
+
+   . DECL_VAR = TYPE (IDENT '=' ( DIGIT | STRING | NULL ))* ;
+   
+   . DECL_STRUCT = struct IDENT '{' DECL_VAR* '}';
+
+   . DECL_FUNC = TYPE IDENT '(' (TYPE IDENT)+ ')' '{'
+
+   . IDENT. 
+   . DIGIT.
+   . STRING.
+
+
+
+*/
+
 typedef enum {
     PARSE_STATE_ACCEPT,
     PARSE_STATE_REJECT,
@@ -136,7 +174,9 @@ typedef struct elem_t {
         decl_struct_t *decl_struct;
         decl_func_t *decl_func;
 
-        token_t *token;
+        digit_t *digit;
+        string_t *str;
+        type_t *typ;
 
     } body;
 

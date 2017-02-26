@@ -34,11 +34,13 @@ lex_token_list_t l4 = {};
 // ** expect **
 //
 
-token_t token1 = {AST_TOKEN_DIGIT, .body.digit = 1}, token2 = {AST_TOKEN_DIGIT, .body.digit = 1};
+digit_t token1 = {1}, token2 = {1};
 
-expr_t expr_token1 = {AST_TOKEN, .body.token = &token1},
-       expr_token2 = {AST_TOKEN, .body.token = &token2};
+expr_t expr_token1 = {AST_DIGIT, .body.digit = &token1},
+       expr_token2 = {AST_DIGIT, .body.digit = &token2};
+
 expr_binop_t expr_binop = {BINOP_PLUS, &expr_token1, &expr_token2};
+
 expr_t expr             = {AST_EXPR_BINOP, &expr_binop};
 stmt_t stmt             = {AST_EXPR, &expr};
 
