@@ -167,6 +167,44 @@ static char lex_state_decr(lex_state *state) {
 
 static char lex_state_peek(lex_state *state) { return state->src[state->pos + state->len]; }
 
+static int lex_state_skip_comments(lex_state *state) {
+    if (lex_state_peek(state) != '/') {
+        return LEX_ERROR;
+    }
+    lex_state_pos_incr(state);
+    if (lex_state_peek(state) != '*') {
+        return LEX_ERROR;
+    }
+    lex_state_pos_incr(state);
+
+    while (1) {
+        switch (lex_state_peek(state)) {
+        case '*':
+            lex_state_pos_incr(state);
+            if (lex_state_peek(state) == '/') {
+            }
+        default:
+            lex_state_pos_incr(state);
+            continue;
+        }
+    }
+
+    return LEX_CONTINUE;
+}
+static int lex_state_skip_comment(lex_state *state) {
+    while (1) {
+        switch (lex_state_peek(state)) {
+        case '\n':
+            state->line++;
+            return LEX_CONTINUE;
+        default:
+            lex_state_pos_incr(state);
+            continue;
+        }
+    }
+
+    return LEX_CONTINUE;
+}
 
 static lex_state_status_t lex_text(lex_state *state) {
     switch (lex_state_peek(state)) {

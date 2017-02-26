@@ -6,8 +6,19 @@
 #include "lex.h"
 #include "parser.h"
 
+void usage(){
+
+    printf("kcc [options] [files]\n");
+    return;
+}
+
 int main(int argc, char *argv[]) {
     int rc;
+
+    if(argc < 2){
+        usage();
+        return 0;
+    }
 
     lex_state *lexer = lex_state_init("1 + 2");
     rc               = lex_state_run(lexer);
