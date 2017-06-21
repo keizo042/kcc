@@ -22,7 +22,7 @@ int test5() { return testing(""); }
 
 typedef int (*testfn_t)();
 
-testfn_t testcase[] = {test1, test2, NULL}; // test3, test4, test5, NULL};
+testfn_t testcase[] = {test1, test2, test3, test4, test5, NULL};
 
 int main() {
     for (int i = 0; testcase[i] != NULL; i++) {
