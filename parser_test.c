@@ -44,7 +44,7 @@ expr_binop_t expr_binop = {BINOP_PLUS, &expr_token1, &expr_token2};
 expr_t expr             = {AST_EXPR_BINOP, &expr_binop};
 stmt_t stmt             = {AST_EXPR, &expr};
 
-int comp4ast(stmt_t *lv, stmt_t *rv) {
+int compare_stmt(stmt_t *lv, stmt_t *rv) {
     return 1;
 }
 
@@ -64,6 +64,6 @@ int main(int argc, char *argv[]) {
     lexer.start     = &l1;
 
     parser_state *parser = parser_state_init(&lexer);
-    comp4ast(result, &stmt);
+    compare_stmt(result, &stmt);
     return 1;
 }
