@@ -287,6 +287,7 @@ static lex_state_status_t lex_string(lex_state *state) {
     if (lex_state_peek(state) != '"') {
         return LEX_ERROR;
     }
+    lex_state_incr(state);
     return lex_emit(state, LEX_TOKEN_STRING);
 }
 
