@@ -20,9 +20,13 @@ int test4() { return testing("\"hello world\""); }
 
 int test5() { return testing(""); }
 
+int test6() { return testing("int var;"); }
+
+int test7() { return testing("int main(){}");}
+
 typedef int (*testfn_t)();
 
-testfn_t testcase[] = {test1, test2, test3, test4, test5, NULL};
+testfn_t testcase[] = {test1, test2, test3, test4, test5, test6, test7, NULL};
 
 int main() {
     for (int i = 0; testcase[i] != NULL; i++) {
