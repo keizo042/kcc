@@ -53,11 +53,8 @@ int lex_token_list_get(lex_token_list_t *list, lex_token_t *token) {
     }
 }
 
-int lex_token_list_succ(lex_token_list_t *list) {
-    lex_token_list_t *t = NULL;
-    t                   = list;
-    list                = list->next;
-    return 0;
+lex_token_list_t *lex_token_getn(lex_token_list_t *list){
+    return list->next;
 }
 
 lex_state *lex_state_init(char *src) {
@@ -126,8 +123,7 @@ static lex_state_status_t lex_emit(lex_state *state, lex_token_typ_t typ) {
     lex_token_t *token = lex_token_init(sym, typ, state->pos, state->line);
     state->pos         = state->pos + state->len;
     state->len         = 0;
-    entry              = lex_token_list_update(state->tail, token);
-    state->tail        = entry;
+    state->tail        = lex_token_list_update(state->tail, token);
     return LEX_CONTINUE;
 }
 
