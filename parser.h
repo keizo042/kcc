@@ -9,5 +9,6 @@ struct kcc_parser_context_s {
 
 typedef struct kcc_parser_context_s kcc_parser_context;
 kcc_parser_context *kcc_parser_context_new();
+kcc_ast_t *kcc_parse(kcc_parser_context*);
 #endif
 

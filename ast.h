@@ -3,6 +3,10 @@
 
 // https://cs.wmich.edu/~gupta/teaching/cs4850/sumII06/The%20syntax%20of%20C%20in%20Backus-Naur%20form.htm
 
+struct kcc_ast_s {
+
+};
+
 struct kcc_trans_s {
   int typ;
   union {
@@ -171,6 +175,7 @@ struct kcc_iteration_stmt_s {
 struct kcc_jump_stmt_s {
 };
 
+typedef struct kcc_ast_s kcc_ast_t;
 typedef struct kcc_trans_s  kcc_trans_t;
 typedef struct kcc_exrn_decl_s  kcc_exrn_decl_t;
 typedef struct kcc_function_def_s kcc_function_def_t;
@@ -226,4 +231,6 @@ typedef struct kcc_expr_stmt_s kcc_expr_stmt_t;
 typedef struct kcc_selection_stmt_s kcc_selection_stmt_t;
 typedef struct kcc_iteration_stmt_s kcc_iteration_stmt_t;
 typedef struct kcc_jump_stmt_s kcc_jump_stmt_t;
+
+int kcc_ast_print(kcc_ast_t *);
 #endif
