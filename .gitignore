@@ -6,3 +6,4 @@ TAGS
 *.out
 *.gch
 .DS_Store
+*.html

@@ -4,31 +4,58 @@
 // https://cs.wmich.edu/~gupta/teaching/cs4850/sumII06/The%20syntax%20of%20C%20in%20Backus-Naur%20form.htm
 
 struct kcc_ast_s {
-
-};
-
-struct kcc_trans_s {
-  int typ;
   union {
+    kcc_trans_t *trans;
   }data;
 };
 
+struct kcc_trans_s {
+  kcc_exrn_decl_s decls[];
+};
+
 struct kcc_exrn_decl_s {
+  int typ;
+  union {
+    kcc_function_def_t *func_def;
+    kcc_decl_t *decl;
+  data;
 };
 
 struct kcc_function_def_s {
+  kcc_decl_sepcifier_t *decls_specs;
+  kcc_declarator_s *declear;
+  kcc_compound_stmt_t *compound_stmt;
 };
 
 struct kcc_decl_specifier_s {
+  int typ;
+  union {
+    kcc_storage_class_spec_t *storage_class_spec;
+    kcc_type_spec_t *type_spec;
+    kcc_type_qualifier_t *type_qualifier;
+  }data;
+
 };
 
 struct kcc_storage_class_spec_s {
+  int typ;
 };
 
 struct kcc_type_spec_s {
+  int typ;
 };
 
 struct kcc_struct_or_union_spec_s {
+  int typ;
+  union {
+    struct {
+    }named_struct_def;
+    struct{
+      kcc_struct_declarator_s
+    }anon_structs_def;
+    struct {
+    }anon_struct_def
+  }data;
 };
 
 struct kcc_struct_or_union_s {
